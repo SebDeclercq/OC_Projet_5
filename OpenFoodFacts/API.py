@@ -32,6 +32,7 @@ class API:
         products: List[Dict[str, Any]] = r_result.json()['products']
         for result in products:
             if cls._result_complete(result):
+                result['categories'] = result['categories'].split(',')
                 product: Product = Product(
                     **{k: result[k] for k in cls.USEFUL_FIELDS}
                 )

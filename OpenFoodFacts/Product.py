@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from dataclasses import dataclass
+from typing import List
 
 
 @dataclass
@@ -9,4 +10,4 @@ class Product:
     nutrition_grades: str
     url: str
     stores: str
-    categories: str
+    categories: List[str]
