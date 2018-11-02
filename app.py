@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from OpenFoodFacts.API import API
-from typing import NoReturn, Dict, Any
+from OpenFoodFacts.Product import Product
+from typing import NoReturn, Dict, Any, Generator
 import getopt
 import sys
 
@@ -15,8 +16,10 @@ def usage() -> NoReturn:
         '   python app.py [OPTIONS]',
         '\nOPTIONS:',
         '   -h --help     Display this help guide',
-        '   -t --terms    Terms to use for requesting OpenFoodFacts API',
         '   -d --debug    Enable debug mode',
+        '   -s --search   Keyword to use for simple search',
+        '   -c --category Enables category search',
+        '   -t --tag      If category search enabled by -c, category to use',
         '\nREQUIREMENTS:',
         '   python 3.7+',
         '   requests',
@@ -27,11 +30,14 @@ def usage() -> NoReturn:
 def parse_options() -> Dict[str, Any]:
     params: Dict[str, Any] = {
         'debug': False,
-        'terms': None
+        'search': None,
+        'tag': None,
     }
     try:
-        options, args = getopt.getopt(sys.argv[1:], 'hdt:',
-                                      ['help', 'debug', 'terms'])
+        options, args = getopt.getopt(sys.argv[1:], 'hds:ct:', [
+                                        'help', 'debug', 'search',
+                                        'category', 'tag'
+                                      ])
     except getopt.GetoptError as err:
         print('\033[1mSome error occurred : "%s"\033[0m' % str(err))
         usage()
@@ -39,21 +45,41 @@ def parse_options() -> Dict[str, Any]:
     for option, arg in options:
         if option in ('-d', '--debug'):
             params['debug'] = True
-        elif option in ('-t', '--terms'):
-            params['terms'] = arg
+        elif option in ('-s', '--search'):
+            params['search'] = arg
+        elif option in ('-c', '--category'):
+            params['category'] = True
+        elif option in ('-t', '--tag'):
+            params['tag'] = arg
         elif option in ('-h', '--help'):
             usage()
             exit()
     return params
 
 
+def simple_search(terms: str) -> Generator[Product, None, None]:
+    return API.get_products({
+        'search_terms': terms,
+    })
+
+
+def search_by_category(category: str) -> Generator[Product, None, None]:
+    return API.get_products({
+        'tagtype_0': 'categories',
+        'tag_contains_0': 'contains',
+        'tag_0': category
+    })
+
+
 def main() -> NoReturn:
     params: Dict[str, Any] = parse_options()
     API.DEBUG = params['debug']
-    if params['terms'] is not None:
-        products = API.get_products({
-            'search_terms': params['terms'],
-        })
+    if params['search'] is not None:
+        products = simple_search(params['search'])
+    elif params['tag'] is not None:
+        if 'category' in params:
+            products = search_by_category(params['tag'])
+        ...
     else:
         usage()
         exit()

@@ -21,7 +21,7 @@ class API:
     @classmethod
     def get_products(cls,
                      params: Dict[str, Union[int, str]]
-                     ) -> Generator:
+                     ) -> Generator[Product, None, None]:
         r_params: Dict[str, Union[int, str]] = cls.BASE_PARAMS.copy()
         r_params.update(params)
         r_result: requests.Response = requests.get(cls.BASE_URL, r_params)
