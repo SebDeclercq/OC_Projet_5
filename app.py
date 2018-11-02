@@ -57,28 +57,16 @@ def parse_options() -> Dict[str, Any]:
     return params
 
 
-def simple_search(terms: str) -> Generator[Product, None, None]:
-    return API.get_products({
-        'search_terms': terms,
-    })
-
-
-def search_by_category(category: str) -> Generator[Product, None, None]:
-    return API.get_products({
-        'tagtype_0': 'categories',
-        'tag_contains_0': 'contains',
-        'tag_0': category
-    })
-
-
 def main() -> NoReturn:
     params: Dict[str, Any] = parse_options()
     API.DEBUG = params['debug']
     if params['search'] is not None:
-        products = simple_search(params['search'])
+        products: Generator[Product, None, None] = API.simple_search(
+            params['search']
+        )
     elif params['tag'] is not None:
         if 'category' in params:
-            products = search_by_category(params['tag'])
+            products = API.search_by_category(params['tag'])
         ...
     else:
         usage()

@@ -49,3 +49,20 @@ class API:
                     )
                 return False
         return True
+
+
+    @classmethod
+    def simple_search(cls, terms: str) -> Generator[Product, None, None]:
+        return cls.get_products({
+            'search_terms': terms,
+        })
+
+
+    @classmethod
+    def search_by_category(cls,
+                           category: str) -> Generator[Product, None, None]:
+        return cls.get_products({
+            'tagtype_0': 'categories',
+            'tag_contains_0': 'contains',
+            'tag_0': category
+        })
