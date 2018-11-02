@@ -16,7 +16,7 @@ def usage() -> NoReturn:
         '\nOPTIONS:',
         '   -h --help     Display this help guide',
         '   -t --terms    Terms to use for requesting OpenFoodFacts API',
-        '   -d --debug Enable debug mode',
+        '   -d --debug    Enable debug mode',
         '\nREQUIREMENTS:',
         '   python 3.7+',
         '   requests',
