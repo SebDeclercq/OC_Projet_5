@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from OpenFoodFacts.Product import Product
 from typing import Dict, Set, Union, Generator, Any, List
+import dataclasses
 import requests
 
 
@@ -14,7 +15,7 @@ class API:
         'sort_by': 'unique_scans_n',
     }
     USEFUL_FIELDS: Set[str] = {
-        'product_name', 'brands', 'nutrition_grades', 'url'
+        field.name for field in dataclasses.fields(Product)
     }
 
     @classmethod
@@ -24,6 +25,8 @@ class API:
         r_params: Dict[str, Union[int, str]] = cls.BASE_PARAMS.copy()
         r_params.update(params)
         r_result: requests.Response = requests.get(cls.BASE_URL, r_params)
+        if cls.DEBUG:
+            print(r_result.url)
         if r_result.status_code != requests.codes.ok:
             r_result.raise_for_status()
         products: List[Dict[str, Any]] = r_result.json()['products']

@@ -8,3 +8,5 @@ class Product:
     brands: str
     nutrition_grades: str
     url: str
+    stores: str
+    categories: str
