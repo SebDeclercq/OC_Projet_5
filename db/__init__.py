@@ -2,30 +2,32 @@
 from sqlalchemy import (Table, Column, Integer, ForeignKey,
                         PrimaryKeyConstraint, create_engine)
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-from typing import Optional, Any
+from sqlalchemy.orm import sessionmaker, session
 
 
 class repr_mixin:
     def __repr__(self) -> str:
         return str(self.__dict__)
 
+
 Base = declarative_base()
 
-def start_up(_DB_URI: Optional[str] = ':memory:') -> Any:
+
+def start_up(_DB_URI: str = ':memory:') -> session.Session:
     engine = create_engine('sqlite:///' + _DB_URI)
     Base.metadata.create_all(engine)
-    DBSession = sessionmaker(bind=engine)
-    session = DBSession()
+    Session = sessionmaker(bind=engine)
+    return Session()
 
-IsSoldAt = Table(
+
+IsSoldAt: Table = Table(
     'IsSoldAt', Base.metadata,
     Column('product_id', Integer(), ForeignKey('Product.id'), nullable=False),
     Column('store_id', Integer(), ForeignKey('Store.id'), nullable=False),
     PrimaryKeyConstraint('product_id', 'store_id')
 )
 
-HasCategory = Table(
+HasCategory: Table = Table(
     'HasCategory', Base.metadata,
     Column('product_id', Integer(), ForeignKey('Product.id'), nullable=False),
     Column('category_id', Integer(), ForeignKey('Category.id'),
