@@ -16,6 +16,13 @@ engine = create_engine('sqlite:///' + dbname)
 Base.prepare(engine, reflect=True)
 print(Base.classes.keys())
 session: Session = Session(engine)
+
+r = session.query(Base.classes.Store)
+for store in r:
+    for product in store.product_collection:
+        print('%s is sold at %s' % (product.name, store.name))
+
 r = session.query(Base.classes.Product)
-for p in r:
-    print(p.__dict__)
+for product in r:
+    for store in product.store_collection:
+        print('%s is sold at %s' % (product.name, store.name))
