@@ -1,0 +1,13 @@
+#!/usr/bin/env python3
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import relationship, backref
+from db import Base, IsSoldAt, repr_mixin
+
+
+class Store(Base, repr_mixin):
+    __tablename__ = 'Store'
+
+    id = Column(Integer(), autoincrement=True,
+                primary_key=True, nullable=False)
+    name = Column(String(), nullable=False)
+    products = relationship('Product', secondary=IsSoldAt, backref='Store')
