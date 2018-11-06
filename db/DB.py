@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from sqlalchemy.orm import Session, Query
 from sqlalchemy.ext.declarative.api import DeclarativeMeta
-from typing import NoReturn, List, Dict, Optional, Any, Generator
+from typing import NoReturn, List, Dict, Optional, Any, Generator, Union
 from OpenFoodFacts import Product
 from db.setup import (Product as DBProduct, Store as DBStore,
                      Category as DBCategory)
@@ -15,29 +15,31 @@ class DB:
         self.Store: DeclarativeMeta = DBStore
         self.Category: DeclarativeMeta = DBCategory
 
-    def add(self, product: Product) -> int:
-        stores = self._add_stores(product.stores)
-        categories = self._add_categories(product.categories)
+    def add(self, product: Product) -> DBProduct:
+        stores: List[DBStore] = self._add_stores(product.stores)
+        categories: List[DBCategory] = self._add_categories(
+            product.categories
+        )
         query: Query = self.session.query(self.Product)
         existing_product: Optional[DBProduct] = query.filter(
             self.Product.id == product.id
         ).first()
         if existing_product:
-            product_id: int = self._update_product(
+            new_product: DBProduct = self._update_product(
                 existing_product, product, stores, categories
             )
         else:
-            product_id = self._add_product(product, stores, categories)
+            new_product = self._add_product(product, stores, categories)
         try:
             self.session.commit()
-            return product_id
+            return new_product
         except Exception as err:
             self.session.rollback()
             raise err
 
     def _add_product(self, product: Product,
                      stores: List[DBStore],
-                     categories: List[DBCategory]) -> int:
+                     categories: List[DBCategory]) -> DBProduct:
         p: DBProduct = self.Product(
             id=product.id,
             name=product.name,
@@ -48,7 +50,7 @@ class DB:
             categories=categories
         )
         self.session.add(p)
-        return p.id
+        return p
 
     def _add_stores(self, store_names: List[str]) -> List[DBStore]:
         stores: List[DBStore] = []
@@ -83,7 +85,7 @@ class DB:
 
     def _update_product(self, existing_product: DBProduct,
                         product: Product, stores: List[DBStore],
-                        categories: List[DBCategory]) -> int:
+                        categories: List[DBCategory]) -> DBProduct:
         existing_product.id = product.id
         existing_product.name = product.name
         # existing_product.brands = product.brands
@@ -91,4 +93,4 @@ class DB:
         existing_product.url = product.url
         existing_product.stores = stores
         existing_product.categories = categories
-        return existing_product.id
+        return existing_product
