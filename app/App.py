@@ -1,31 +1,34 @@
 #!/usr/bin/env python3
 from typing import NoReturn, List, Dict, Optional, Any, Generator
-from sqlalchemy.orm import Session
 import db.setup
-from db import Base
+from db import Base, DB
 from app import Params
 from OpenFoodFacts import API, Product
 
 
 class App:
-    session: Session
+    db: DB
     params: Params
 
     def __init__(self, params: Params) -> NoReturn:
         self.params = params
+        self.base = Base
+
 
     def run(self) -> NoReturn:
         self._connect_db()
         self.api = API(verbose=self.params.verbose)
         for product in self._do_api_request():
-            print(product)
+            self.db.add(product)
+            # print(product)
 
-    def _connect_db(self) -> Session:
+    def _connect_db(self) -> DB:
         if self.params.setup_db or self.params.dbname == 'sqlite:///:memory:':
-            self.session = db.setup.start_up(self.params.dbname)
+            base, session = db.setup.start_up(self.params.dbname)
+            self.db = DB(base, session)
         else:
-            self.session = db.connect(self.params.dbname)
-        return self.session
+            self.db = db.connect(self.params.dbname)
+        return self.db
 
     def _do_api_request(self) -> Generator[Product, None, None]:
         if self.params.search is not None:

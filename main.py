@@ -3,6 +3,7 @@ from typing import NoReturn, List, Dict, Optional, Any, Generator
 import getopt
 import sys
 from app import App, Params
+import os
 
 
 def usage() -> NoReturn:
@@ -41,8 +42,14 @@ def parse_options() -> Params:
         print('\033[1mSome error occurred : "%s"\033[0m' % str(err))
         usage()
         exit()
+    flags = (option[0] for option in options)
     for option, arg in options:
         if option in ('-d', '--dbname'):
+            if 'sqlite:///' in arg and '--setup_db' not in flags:
+                dbname: str = arg[arg.find('///') + 3:]
+                if not os.path.isfile(dbname) and dbname != ':memory:':
+                    print('''SQLite file "%s" doesn't exist''' % dbname)
+                    exit()
             params['dbname'] = arg
         elif option == '--setup_db':
             params['setup_db'] = True

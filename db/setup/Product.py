@@ -13,4 +13,4 @@ class Product(Base, repr_mixin):
     url = Column(String(), nullable=False)
     stores = relationship('Store', secondary=IsSoldAt, backref='Product')
     categories = relationship('Category', secondary=HasCategory,
-                             backref='Product')
+                              backref='Product')

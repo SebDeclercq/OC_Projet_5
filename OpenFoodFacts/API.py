@@ -32,6 +32,7 @@ class API:
             r_result.raise_for_status()
         products: List[Dict[str, Any]] = r_result.json()['products']
         for result in products:
+            result['name'] = result.pop('product_name')
             if self._result_complete(result):
                 for field in ('categories', 'stores'):
                     result[field] = result[field].split(',')

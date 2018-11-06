@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 from sqlalchemy import (Table, Column, Integer, ForeignKey,
                         PrimaryKeyConstraint, create_engine)
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.ext.declarative import declarative_base, DeclarativeMeta
 from sqlalchemy.orm import sessionmaker, Session
+from typing import Tuple
 
 
 class repr_mixin:
@@ -13,11 +14,12 @@ class repr_mixin:
 Base = declarative_base()
 
 
-def start_up(_DB_URI: str = 'sqlite:///:memory:') -> Session:
+def start_up(_DB_URI: str = 'sqlite:///:memory:') \
+                -> Tuple[DeclarativeMeta, Session]:
     engine = create_engine(_DB_URI)
     Base.metadata.create_all(engine)
     Session = sessionmaker(bind=engine)
-    return Session()
+    return (Base, Session())
 
 
 IsSoldAt: Table = Table(
