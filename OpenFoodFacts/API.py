@@ -3,6 +3,7 @@ from OpenFoodFacts.Product import Product
 from typing import Dict, Set, Union, Generator, Any, List, NoReturn
 import dataclasses
 import requests
+import re
 
 
 class API:
@@ -35,7 +36,9 @@ class API:
             result['name'] = result.pop('product_name')
             if self._result_complete(result):
                 for field in ('categories', 'stores'):
-                    result[field] = result[field].split(',')
+                    result[field] = re.split(
+                        r'\s*,\s*', result[field].lower()
+                    )
                 product: Product = Product(
                     **{k: result[k] for k in self.USEFUL_FIELDS}
                 )

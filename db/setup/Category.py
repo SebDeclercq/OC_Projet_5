@@ -9,6 +9,6 @@ class Category(Base, repr_mixin):
 
     id = Column(Integer(), autoincrement=True,
                 primary_key=True, nullable=False)
-    name = Column(String(), nullable=False)
+    name = Column(String(), nullable=False, unique=True)
     products = relationship('Product', secondary=HasCategory,
                             backref='Category')
