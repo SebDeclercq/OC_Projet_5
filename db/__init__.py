@@ -16,6 +16,7 @@ def name_for_many_to_many(base: DeclarativeMeta,
 
 Base = automap_base()
 
+
 def connect(_DB_URI: str) -> Session:
     engine = create_engine(_DB_URI)
     Base.prepare(engine, reflect=True,

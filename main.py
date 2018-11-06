@@ -58,5 +58,6 @@ def main() -> NoReturn:
     else:
         session: Session = db.connect(params['dbname'])
 
+
 if __name__ == '__main__':
     main()
