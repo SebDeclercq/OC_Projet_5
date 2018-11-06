@@ -20,6 +20,7 @@ def usage() -> NoReturn:
         '   -s --search   Keyword to use for simple search',
         '   -c --category Enables category search',
         '   -t --tag      If category search enabled by -c, category to use',
+        '   -v --verbose  Display more messages (for dev purpose only)',
         '\nREQUIREMENTS:',
         '   python 3.7+',
         '   requests',
@@ -31,9 +32,10 @@ def usage() -> NoReturn:
 def parse_options() -> Params:
     params: Dict[str, Any] = {}
     try:
-        options, args = getopt.getopt(sys.argv[1:], 'hd:s:c:t:', [
+        options, args = getopt.getopt(sys.argv[1:], 'hd:s:c:t:v', [
                                         'help', 'dbname', 'setup_db',
                                         'search', 'category', 'tag',
+                                        'verbose',
                                       ])
     except getopt.GetoptError as err:
         print('\033[1mSome error occurred : "%s"\033[0m' % str(err))
@@ -53,6 +55,8 @@ def parse_options() -> Params:
         elif option in ('-h', '--help'):
             usage()
             exit()
+        elif option in ('-v', '--verbose'):
+            params['verbose'] = True
     return Params(**params)
 
 

@@ -16,6 +16,7 @@ class App:
 
     def run(self) -> NoReturn:
         self._connect_db()
+        self.api = API(verbose=self.params.verbose)
         for product in self._do_api_request():
             print(product)
 
@@ -28,12 +29,12 @@ class App:
 
     def _do_api_request(self) -> Generator[Product, None, None]:
         if self.params.search is not None:
-            products: Generator[Product, None, None] = API.simple_search(
+            products: Generator[Product, None, None] = self.api.simple_search(
                 self.params.search
             )
         elif self.params.tag is not None:
             if self.params.category is not None:
-                products = API.search_by_category(self.params.tag)
+                products = self.api.search_by_category(self.params.tag)
             ...
         for product in products:
             yield product

@@ -10,3 +10,4 @@ class Params:
     search: Optional[str] = None
     category: Optional[str] = None
     tag: Optional[str] = None
+    verbose: bool = False
