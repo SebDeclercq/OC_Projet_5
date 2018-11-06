@@ -12,3 +12,5 @@ class Product(Base, repr_mixin):
     nutrition_grade = Column(String(1), nullable=False)
     url = Column(String(), nullable=False)
     stores = relationship('Store', secondary=IsSoldAt, backref='Product')
+    categories = relationship('Category', secondary=HasCategory,
+                             backref='Product')

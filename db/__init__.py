@@ -11,7 +11,11 @@ def name_for_many_to_many(base: DeclarativeMeta,
                           local_cls: DeclarativeMeta,
                           referred_cls: DeclarativeMeta,
                           constraint: ForeignKeyConstraint) -> str:
-    return referred_cls.__name__.lower() + 's'
+    if referred_cls.__name__[-1] == 'y':
+        name = referred_cls.__name__[:-1] + 'ies'  # For category/categories
+    else:
+        name = referred_cls.__name__ + 's'
+    return name.lower()
 
 
 Base = automap_base()
