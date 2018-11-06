@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 from typing import NoReturn, List, Dict, Optional, Any, Generator
+from sqlalchemy.orm import Session
 import db.setup
+from db import Base
 import getopt
 import sys
 
@@ -48,12 +50,13 @@ def parse_options() -> Dict[str, Any]:
             exit()
     return params
 
+
 def main() -> NoReturn:
     params = parse_options()
     if params['setup_db'] or params['dbname'] == 'sqlite:///:memory:':
         db.setup.start_up(params['dbname'])
     else:
-        ...
+        session: Session = db.connect(params['dbname'])
 
 if __name__ == '__main__':
     main()
