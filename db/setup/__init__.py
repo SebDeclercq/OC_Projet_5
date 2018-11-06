@@ -2,7 +2,7 @@
 from sqlalchemy import (Table, Column, Integer, ForeignKey,
                         PrimaryKeyConstraint, create_engine)
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, session
+from sqlalchemy.orm import sessionmaker, Session
 
 
 class repr_mixin:
@@ -13,8 +13,8 @@ class repr_mixin:
 Base = declarative_base()
 
 
-def start_up(_DB_URI: str = ':memory:') -> session.Session:
-    engine = create_engine('sqlite:///' + _DB_URI)
+def start_up(_DB_URI: str = 'sqlite:///:memory:') -> Session:
+    engine = create_engine(_DB_URI)
     Base.metadata.create_all(engine)
     Session = sessionmaker(bind=engine)
     return Session()

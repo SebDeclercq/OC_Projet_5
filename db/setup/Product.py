@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship, backref
-from db import Base, IsSoldAt, HasCategory, repr_mixin
+from db.setup import Base, IsSoldAt, HasCategory, repr_mixin
 
 
 class Product(Base, repr_mixin):

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from sqlalchemy import Column, Integer, String
-from db import Base, HasCategory, repr_mixin
+from db.setup import Base, HasCategory, repr_mixin
 
 
 class Category(Base, repr_mixin):
