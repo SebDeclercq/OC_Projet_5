@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
-import db
+import db.setup
 from typing import NoReturn
 import sys
 from sqlalchemy.orm import session, query
 
 
 def populate(session: session.Session) -> NoReturn:
-    store: db.Store = db.Store(name='vival')
+    store: db.setup.Store = db.setup.Store(name='vival')
     session.add(store)
-    product: db.Product = db.Product(
+    product: db.setup.Product = db.setup.Product(
         id=123, name='chips casino', nutrition_grade='E',
         url='http://vival/chips%20casino', stores=[store]
     )
     session.add(product)
-    product = db.Product(
+    product = db.setup.Product(
         id=456, name='perrier', nutrition_grade='A',
         url='http://vival/perrier', stores=[store]
     )
@@ -22,11 +22,11 @@ def populate(session: session.Session) -> NoReturn:
 
 
 def scan(session: session.Session) -> NoReturn:
-    r: query.Query = session.query(db.Store)
+    r: query.Query = session.query(db.setup.Store)
     for store in r:
         for product in store.products:
             print('%s is sold at %s' % (product.name, store.name))
-    r = session.query(db.Product)
+    r = session.query(db.setup.Product)
     for product in r:
         for store in product.stores:
             print('%s is sold at %s' % (product.name, store.name))
@@ -37,7 +37,7 @@ def main() -> NoReturn:
         dbname = sys.argv[1]
     else:
         dbname = ':memory:'
-    session = db.start_up(dbname)
+    session = db.setup.start_up(dbname)
     populate(session)
     scan(session)
 
