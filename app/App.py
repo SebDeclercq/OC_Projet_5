@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from typing import NoReturn, List, Dict, Optional, Any, Generator
 import db.setup
-from db import Base, DB
+from db import DB
 from app import Params
 from OpenFoodFacts import API, Product
 
@@ -12,8 +12,6 @@ class App:
 
     def __init__(self, params: Params) -> NoReturn:
         self.params = params
-        self.base = Base
-
 
     def run(self) -> NoReturn:
         self._connect_db()
@@ -23,11 +21,8 @@ class App:
             # print(product)
 
     def _connect_db(self) -> DB:
-        if self.params.setup_db or self.params.dbname == 'sqlite:///:memory:':
-            base, session = db.setup.start_up(self.params.dbname)
-            self.db = DB(base, session)
-        else:
-            self.db = db.connect(self.params.dbname)
+        base, session = db.setup.start_up(self.params.dbname)
+        self.db = DB(base, session)
         return self.db
 
     def _do_api_request(self) -> Generator[Product, None, None]:

@@ -10,14 +10,9 @@ class DB:
     def __init__(self, base: DeclarativeMeta, session: Session) -> NoReturn:
         self.base: DeclarativeMeta = base
         self.session: Session = session
-        if hasattr(self.base, 'classes'):
-            self.Product: DeclarativeMeta = self.base.classes.Product
-            self.Store: DeclarativeMeta = self.base.classes.Store
-            self.Category: DeclarativeMeta = self.base.classes.Category
-        else:
-            self.Product: DeclarativeMeta = db.setup.Product
-            self.Store: DeclarativeMeta = db.setup.Store
-            self.Category: DeclarativeMeta = db.setup.Category
+        self.Product: DeclarativeMeta = db.setup.Product
+        self.Store: DeclarativeMeta = db.setup.Store
+        self.Category: DeclarativeMeta = db.setup.Category
 
     def add(self, product: Product) -> int:
         stores = self._add_stores(product.stores)

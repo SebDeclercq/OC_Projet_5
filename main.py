@@ -45,11 +45,6 @@ def parse_options() -> Params:
     flags = (option[0] for option in options)
     for option, arg in options:
         if option in ('-d', '--dbname'):
-            if 'sqlite:///' in arg and '--setup_db' not in flags:
-                dbname: str = arg[arg.find('///') + 3:]
-                if not os.path.isfile(dbname) and dbname != ':memory:':
-                    print('''SQLite file "%s" doesn't exist''' % dbname)
-                    exit()
             params['dbname'] = arg
         elif option == '--setup_db':
             params['setup_db'] = True
