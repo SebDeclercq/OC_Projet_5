@@ -20,7 +20,6 @@ class API:
     def __init__(self, verbose: bool = False) -> NoReturn:
         self.verbose = verbose
 
-
     def get_products(self,
                      params: Dict[str, Union[int, str]]
                      ) -> Generator[Product, None, None]:
@@ -34,7 +33,8 @@ class API:
         products: List[Dict[str, Any]] = r_result.json()['products']
         for result in products:
             if self._result_complete(result):
-                result['categories'] = result['categories'].split(',')
+                for field in ('categories', 'stores'):
+                    result[field] = result[field].split(',')
                 product: Product = Product(
                     **{k: result[k] for k in self.USEFUL_FIELDS}
                 )
