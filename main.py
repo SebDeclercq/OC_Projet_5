@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 from typing import NoReturn, List, Dict, Optional, Any, Generator
-from sqlalchemy.orm import Session
-import db.setup
-from db import Base
 import getopt
 import sys
+from app import App, Params
 
 
 def usage() -> NoReturn:
@@ -27,11 +25,8 @@ def usage() -> NoReturn:
     )))
 
 
-def parse_options() -> Dict[str, Any]:
-    params: Dict[str, Any] = {
-        'dbname': 'sqlite:///:memory:',
-        'setup_db': False
-    }
+def parse_options() -> Params:
+    params: Dict[str, Any] = {}
     try:
         options, args = getopt.getopt(sys.argv[1:], 'hd:', [
                                         'help', 'dbname', 'setup_db'
@@ -48,15 +43,13 @@ def parse_options() -> Dict[str, Any]:
         elif option in ('-h', '--help'):
             usage()
             exit()
-    return params
+    return Params(**params)
 
 
 def main() -> NoReturn:
-    params = parse_options()
-    if params['setup_db'] or params['dbname'] == 'sqlite:///:memory:':
-        db.setup.start_up(params['dbname'])
-    else:
-        session: Session = db.connect(params['dbname'])
+    params: Params = parse_options()
+    app: App = App(params)
+    app.run()
 
 
 if __name__ == '__main__':
