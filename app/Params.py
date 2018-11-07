@@ -12,3 +12,4 @@ class Params:
     tag: Optional[str] = None
     verbose: bool = False
     categories_file: str = 'categories.yml'
+    interactive: bool = False

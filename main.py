@@ -15,11 +15,12 @@ def usage() -> None:
         '\nUSAGE: ',
         '   python app.py [OPTIONS]',
         '\nOPTIONS:',
-        '   -h --help      Display this help guide',
-        '   -d --dbname    Database to use (default : sqlite:///:memory:)',
-        '   --setup_db     Sets up database (flag)',
-        '   -u --update_db Updates database content (flag)',
-        '   --categories   File containing the wished categories in database'
+        '   -h --help        Display this help guide',
+        '   -d --dbname      Database to use (default : sqlite:///:memory:)',
+        '   --setup_db       Sets up database (flag)',
+        '   -u --update_db   Updates database content (flag)',
+        '   --categories     File containing the wished categories in database',
+        '   -i --interactive Active interactive mode (flag)',
         '\nREQUIREMENTS:',
         '   python 3.7+',
         '   requests',
@@ -31,9 +32,10 @@ def usage() -> None:
 def parse_options() -> Params:
     params: Dict[str, Any] = {}
     try:
-        options, args = getopt.getopt(sys.argv[1:], 'hd:vu', [
+        options, args = getopt.getopt(sys.argv[1:], 'hd:vui', [
                                         'help', 'dbname', 'setup_db',
                                         'verbose', 'update_db', 'categories',
+                                        'interactive',
                                       ])
     except getopt.GetoptError as err:
         print('\033[1mSome error occurred : "%s"\033[0m' % str(err))
@@ -49,6 +51,8 @@ def parse_options() -> Params:
             params['setup_db'] = True
         elif option == 'categories':
             params['categories_file'] = arg
+        elif option in ('-i', '--interactive'):
+            params['interactive'] = True
         elif option in ('-h', '--help'):
             usage()
             exit()

@@ -15,6 +15,12 @@ class App:
         self.params = params
 
     def run(self) -> None:
+        if self.params.interactive:
+            self._interactive_mode()
+        else:
+            self._db_mode()
+
+    def _db_mode(self) -> None:
         self._connect_db()
         self.api = API(verbose=self.params.verbose)
         for category in self._get_categories():
@@ -46,3 +52,6 @@ class App:
         for product in products:
             product.categories = [category]
             yield product
+
+    def _interactive_mode(self) -> Any:
+        ...
