@@ -11,17 +11,15 @@ def usage() -> None:
         '\nDESCRIPTION: ',
         'This main script is intended to pilot all processing actions for ',
         'the P5 of OpenClassRooms DA Python. It currently creates the ',
-        'database if the correponding options are provided.',
+        'database or updates it if the correponding options are provided.',
         '\nUSAGE: ',
         '   python app.py [OPTIONS]',
         '\nOPTIONS:',
-        '   -h --help     Display this help guide',
-        '   -d --dbname   Database to use (default : sqlite:///:memory:)',
-        '   --setup_db    Setup Database (flag)',
-        '   -s --search   Keyword to use for simple search',
-        '   -c --category Enables category search',
-        '   -t --tag      If category search enabled by -c, category to use',
-        '   -v --verbose  Display more messages (for dev purpose only)',
+        '   -h --help      Display this help guide',
+        '   -d --dbname    Database to use (default : sqlite:///:memory:)',
+        '   --setup_db     Sets up database (flag)',
+        '   -u --update_db Updates database content (flag)',
+        '   --categories   File containing the wished categories in database'
         '\nREQUIREMENTS:',
         '   python 3.7+',
         '   requests',
@@ -33,10 +31,9 @@ def usage() -> None:
 def parse_options() -> Params:
     params: Dict[str, Any] = {}
     try:
-        options, args = getopt.getopt(sys.argv[1:], 'hd:s:c:t:v', [
+        options, args = getopt.getopt(sys.argv[1:], 'hd:vu', [
                                         'help', 'dbname', 'setup_db',
-                                        'search', 'category', 'tag',
-                                        'verbose',
+                                        'verbose', 'update_db', 'categories',
                                       ])
     except getopt.GetoptError as err:
         print('\033[1mSome error occurred : "%s"\033[0m' % str(err))
@@ -46,14 +43,12 @@ def parse_options() -> Params:
     for option, arg in options:
         if option in ('-d', '--dbname'):
             params['dbname'] = arg
-        elif option == '--setup_db':
+        elif option in ('--setup_db', '-u', '--update_db'):
+            # Those two options do the same things,
+            # both are available for human-reading purpose only
             params['setup_db'] = True
-        elif option in ('-s', '--search'):
-            params['search'] = arg
-        elif option in ('-c', '--category'):
-            params['category'] = True
-        elif option in ('-t', '--tag'):
-            params['tag'] = arg
+        elif option == 'categories':
+            params['categories_file'] = arg
         elif option in ('-h', '--help'):
             usage()
             exit()
@@ -65,7 +60,11 @@ def parse_options() -> Params:
 def main() -> None:
     params: Params = parse_options()
     app: App = App(params)
-    app.run()
+    try:
+        app.run()
+    except Exception as err:
+        print(err)
+        exit()
 
 
 if __name__ == '__main__':
