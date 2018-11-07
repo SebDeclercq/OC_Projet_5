@@ -18,7 +18,7 @@ class API:
         field.name for field in dataclasses.fields(Product)
     }
 
-    def __init__(self, verbose: bool = False) -> NoReturn:
+    def __init__(self, verbose: bool = False) -> None:
         self.verbose = verbose
 
     def get_products(self,

@@ -6,7 +6,7 @@ from app import App, Params
 import os
 
 
-def usage() -> NoReturn:
+def usage() -> None:
     print('\n'.join((
         '\nDESCRIPTION: ',
         'This main script is intended to pilot all processing actions for ',
@@ -62,7 +62,7 @@ def parse_options() -> Params:
     return Params(**params)
 
 
-def main() -> NoReturn:
+def main() -> None:
     params: Params = parse_options()
     app: App = App(params)
     app.run()

@@ -10,10 +10,10 @@ class App:
     db: DB
     params: Params
 
-    def __init__(self, params: Params) -> NoReturn:
+    def __init__(self, params: Params) -> None:
         self.params = params
 
-    def run(self) -> NoReturn:
+    def run(self) -> None:
         self._connect_db()
         self.api = API(verbose=self.params.verbose)
         for product in self._do_api_request():

@@ -8,7 +8,7 @@ from db.setup import (Product as DBProduct, Store as DBStore,
 
 
 class DB:
-    def __init__(self, base: DeclarativeMeta, session: Session) -> NoReturn:
+    def __init__(self, base: DeclarativeMeta, session: Session) -> None:
         self.base: DeclarativeMeta = base
         self.session: Session = session
         self.Product: DeclarativeMeta = DBProduct
