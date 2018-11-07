@@ -13,6 +13,8 @@ class API:
         'page_size': 20,
         'json': 1,
         'sort_by': 'unique_scans_n',
+        'tagtype_0': 'categories',
+        'tag_contains_0': 'contains',
     }
     USEFUL_FIELDS: Set[str] = {
         field.name for field in dataclasses.fields(Product)
@@ -21,7 +23,7 @@ class API:
     def __init__(self, verbose: bool = False) -> None:
         self.verbose = verbose
 
-    def get_products(self,
+    def _get_products(self,
                      params: Dict[str, Union[int, str]]
                      ) -> Generator[Product, None, None]:
         r_params: Dict[str, Union[int, str]] = self.BASE_PARAMS.copy()
@@ -55,15 +57,9 @@ class API:
                 return False
         return True
 
-    def simple_search(self, terms: str) -> Generator[Product, None, None]:
-        return self.get_products({
-            'search_terms': terms,
-        })
-
-    def search_by_category(self,
-                           category: str) -> Generator[Product, None, None]:
-        return self.get_products({
-            'tagtype_0': 'categories',
-            'tag_contains_0': 'contains',
-            'tag_0': category
+    def search(self, category: str,
+               page_size: int = 20) -> Generator[Product, None, None]:
+        return self._get_products({
+            'tag_0': category,
+            'page_size': page_size,
         })

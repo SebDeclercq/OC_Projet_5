@@ -18,16 +18,17 @@ class App:
         self._connect_db()
         self.api = API(verbose=self.params.verbose)
         for category in self._get_categories():
-            nb_product = 0
-            for product in self._do_api_request(category):
+            for product in self._search_api(category):
                 self.db.add(product)
-                nb_product += 1
-                if nb_product > 100:  # 100 products MAX by category
-                    break
 
     def _get_categories(self) -> List[str]:
         with open(self.params.categories_file) as catego:
-            self.categories: List[str] = yaml.load(catego)
+            data: Dict[str, Any] = yaml.load(catego)
+        self.categories: List[str] = data['categories']
+        self.max_products_by_category: int = data['max_products_by_category']
+        if self.max_products_by_category > 100:
+            # 100 products MAX by category
+            self.max_nb_products_by_category = 100
         if len(self.categories) > 5:
             self.categories = self.categories[:4]  # 5 categories MAX
         return self.categories
@@ -37,8 +38,11 @@ class App:
         self.db = DB(base, session)
         return self.db
 
-    def _do_api_request(self, category: str) \
+    def _search_api(self, category: str) \
             -> Generator[Product, None, None]:
-        for product in self.api.search_by_category(category):
+        products: Generator[Product, None, None] = self.api.search(
+            category, self.max_products_by_category
+        )
+        for product in products:
             product.categories = [category]
             yield product

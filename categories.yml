@@ -1,2 +1,11 @@
-# 5 categories MAX
-- chips
+categories:
+    - chips
+    - glaces au chocolat
+max_products_by_category: 100
+
+
+# NOTE
+# - 5 categories MAX
+# - 100 products by category MAX
+# WARNING
+# This does NOT mean that the amount'll be reached
