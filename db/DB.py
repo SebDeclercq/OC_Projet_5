@@ -4,7 +4,7 @@ from sqlalchemy.ext.declarative.api import DeclarativeMeta
 from typing import NoReturn, List, Dict, Optional, Any, Generator, Union
 from OpenFoodFacts import Product
 from db.setup import (Product as DBProduct, Store as DBStore,
-                     Category as DBCategory)
+                      Category as DBCategory)
 
 
 class DB:
@@ -67,8 +67,8 @@ class DB:
                 stores.append(existing_store)
         return stores
 
-    def _add_categories(self, category_names: List[str]) \
-                            -> List[DBCategory]:
+    def _add_categories(self,
+                        category_names: List[str]) -> List[DBCategory]:
         categories: List[DBCategory] = []
         query: Query = self.session.query(self.Category)
         for category_name in category_names:

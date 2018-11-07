@@ -24,8 +24,8 @@ class API:
         self.verbose = verbose
 
     def _get_products(self,
-                     params: Dict[str, Union[int, str]]
-                     ) -> Generator[Product, None, None]:
+                      params: Dict[str, Union[int, str]]
+                      ) -> Generator[Product, None, None]:
         r_params: Dict[str, Union[int, str]] = self.BASE_PARAMS.copy()
         r_params.update(params)
         r_result: requests.Response = requests.get(self.BASE_URL, r_params)
