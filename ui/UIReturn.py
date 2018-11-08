@@ -7,3 +7,4 @@ from typing import Optional
 class UIReturn:
     action: Optional[int] = None
     message: Optional[str] = None
+    id_query: Optional[int] = None

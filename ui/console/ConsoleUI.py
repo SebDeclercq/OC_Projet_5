@@ -16,7 +16,7 @@ class ConsoleUI(UI):
             text: Dict[str, str] = yaml.load(f)
         for page_name, page_content in text.items():
             page_level = getattr(self, page_name)
-            self.page_contents[page_level] = page_content
+            self.page_contents[page_level] = page_content.rstrip()
 
     def display(self, data: Any = None) -> Any:
         if self.current_level == self.WELCOME:
@@ -24,9 +24,22 @@ class ConsoleUI(UI):
             self.current_level = self.TOP_MENU
         print(self.page_contents[self.current_level])
         if data:
-            ...
+            self.actions: Dict[int, int] = {}
+            list_menus: List[int] = [self.S_LIST_CATEGO,
+                                     self.S_LIST_PRODUCTS,
+                                     self.F_LIST_FAVORITES]
+            product_pages: List[int] = [self.S_PRODUCT_PAGE,
+                                        self.F_PRODUCT_PAGE]
+            if self.current_level in list_menus:
+                for idx, element in enumerate(data):
+                    no_el: int = idx + 1
+                    print('%s - %s' % (str(no_el), element[0]))
+                    self.actions[no_el] = element[1]
+            elif self.current_level in product_pages:
+                print(self.page_contents[self.current_level] % data)
         if self.current_level != self.TOP_MENU:
-            print("0 - Retour à l'accueil\n")
+            print("0 - Retour à l'accueil")
+        print("q - Quitter")
 
     def interact(self) -> UIReturn:
         ret: UIReturn = UIReturn()
@@ -45,13 +58,20 @@ class ConsoleUI(UI):
             elif self.current_level == self.TOP_MENU:
                 if action == 1:
                     self.current_level = self.S_LIST_CATEGO
+                    ret.action = self.S_LIST_CATEGO
                 elif action == 2:
-                    self.current_level = self.S_LIST_PRODUCTS
+                    self.current_level = self.F_LIST_FAVORITES
                 else:
                     ret.message = self._error(action)
+            elif self.current_level == self.S_LIST_CATEGO:
+                self.current_level = self.S_LIST_PRODUCTS
+                ret.action = self.S_LIST_PRODUCTS
+                ret.id_query = self.actions[action]
+            elif self.current_level == self.S_LIST_PRODUCTS:
+                self.current_level = self.S_PRODUCT_PAGE
+                ret.action = self.S_PRODUCT_PAGE
+                ret.id_query = self.actions[action]
             elif self.current_level == self.S_PRODUCT_PAGE:
-                ...
-            elif self.current_level == self.F_LIST_FAVORITES:
                 ...
             elif self.current_level == self.F_PRODUCT_PAGE:
                 ...

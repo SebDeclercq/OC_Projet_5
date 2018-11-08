@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from abc import ABC, abstractmethod
-from typing import Any
+from typing import Optional, Any
 
 
 class UI(ABC):
@@ -19,5 +19,5 @@ class UI(ABC):
         pass
 
     @abstractmethod
-    def display(self) -> Any:
+    def display(self, data: Optional[Any] = None) -> Any:
         pass

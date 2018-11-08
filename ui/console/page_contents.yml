@@ -23,9 +23,9 @@ S_LIST_PRODUCTS: |
 S_PRODUCT_PAGE: |
 
     Voici le produit sélectionné :
-    - nom : ...
-    - nutriscore : ...
-    ...
+    - id (code-bare) : %(id)s
+    - nom : %(name)s
+    - nutriscore : %(nutrition_grade)s
 
     1 - Sauvegarder dans les favoris
 

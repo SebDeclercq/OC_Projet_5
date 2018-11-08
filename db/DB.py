@@ -94,3 +94,16 @@ class DB:
         existing_product.stores = stores
         existing_product.categories = categories
         return existing_product
+
+    def get_categories(self) -> List[DBCategory]:
+        return self.session.query(self.Category)
+
+    def _get_products_by_category(self, category_id: int) -> List[DBProduct]:
+        return self.session.query(self.Category).filter(
+            self.Category.id == category_id
+        ).first().products
+
+    def _get_product_by_id(self, product_id: int) -> DBProduct:
+        return self.session.query(self.Product).filter(
+            self.Product.id == product_id
+        ).first()

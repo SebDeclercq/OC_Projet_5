@@ -8,6 +8,7 @@ from typing import Tuple
 
 class repr_mixin:
     def __repr__(self) -> str:
+        self.__dict__.pop('_sa_instance_state')
         return str(self.__dict__)
 
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from typing import NoReturn, List, Dict, Optional, Any, Generator
 import db.setup
-from db import DB
+from db import DB, DBCategory, DBProduct
 from app import Params
 from OpenFoodFacts import API, Product
 from ui import UI, UIFactory, UIReturn
@@ -14,6 +14,7 @@ class App:
 
     def __init__(self, params: Params) -> None:
         self.params = params
+        self._connect_db()
 
     def run(self) -> None:
         if self.params.interactive:
@@ -22,13 +23,13 @@ class App:
             self._db_mode()
 
     def _db_mode(self) -> None:
-        self._connect_db()
         self.api = API(verbose=self.params.verbose)
-        for category in self._get_categories():
+        for category in self._categories:
             for product in self._search_api(category):
                 self.db.add(product)
 
-    def _get_categories(self) -> List[str]:
+    @property
+    def _categories(self) -> List[str]:
         with open(self.params.categories_file) as catego:
             data: Dict[str, Any] = yaml.load(catego)
         self.categories: List[str] = data['categories']
@@ -59,9 +60,31 @@ class App:
         self.ui.display()
         while True:
             uir: UIReturn = self.ui.interact()
+            data: Any = None
             if uir.message:
                 print(uir.message)
             if uir.action == UI.QUIT:
                 exit()
-            self.ui.display()
-        ...
+            elif uir.action == UI.S_LIST_CATEGO:
+                data = [(c.name.capitalize(), c.id)
+                        for c in self._get_categories()]
+            elif uir.action == UI.S_LIST_PRODUCTS:
+                if uir.id_query:
+                    data = [(p.name.capitalize(), p.id)
+                            for p in self._get_products(uir.id_query)]
+            elif uir.action == UI.S_PRODUCT_PAGE:
+                if uir.id_query:
+                    product: DBProduct = self._get_product_details(
+                        uir.id_query
+                    )
+                    data = product.__dict__
+            self.ui.display(data)
+
+    def _get_categories(self) -> List[DBCategory]:
+        return self.db.get_categories()
+
+    def _get_products(self, category_id: int) -> List[DBProduct]:
+        return self.db._get_products_by_category(category_id)
+
+    def _get_product_details(self, product_id: int) -> DBProduct:
+        return self.db._get_product_by_id(product_id)
