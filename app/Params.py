@@ -13,3 +13,4 @@ class Params:
     verbose: bool = False
     categories_file: str = 'categories.yml'
     interactive: bool = False
+    ui: str = 'console'

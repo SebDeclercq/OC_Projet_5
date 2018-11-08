@@ -4,7 +4,7 @@ import db.setup
 from db import DB
 from app import Params
 from OpenFoodFacts import API, Product
-from ui import ConsoleUI
+from ui import UI, UIFactory, UIReturn
 import yaml
 
 
@@ -55,8 +55,13 @@ class App:
             yield product
 
     def _interactive_mode(self) -> Any:
-        self.ui: ConsoleUI = ConsoleUI()
+        self.ui: UI = UIFactory.factory(self.params.ui)
+        self.ui.display()
         while True:
+            uir: UIReturn = self.ui.interact()
+            if uir.message:
+                print(uir.message)
+            if uir.action == UI.QUIT:
+                exit()
             self.ui.display()
-            self.ui.interact()
         ...
