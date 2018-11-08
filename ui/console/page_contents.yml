@@ -23,11 +23,19 @@ S_LIST_PRODUCTS: |
 S_PRODUCT_PAGE: |
 
     Voici le produit sélectionné :
-    - id (code-bare) : %(id)s
+    - id (code-barre) : %(id)s
     - nom : %(name)s
     - nutriscore : %(nutrition_grade)s
+    - magasin(s) : %(stores)s
+    - URL: %(url)s
 
-    1 - Sauvegarder dans les favoris
+    1 - Trouver des substituts plus sain
+    2 - Sauvegarder dans les favoris
+
+S_LIST_SUBSTITUTES: |
+
+    Voici la liste des substituts disponibles. Veuillez sélectionner
+    un produit à l'aide de son numéro d'ordre.
 
 F_LIST_FAVORITES: |
 
@@ -36,7 +44,9 @@ F_LIST_FAVORITES: |
 
 F_PRODUCT_PAGE: |
 
-    Voici le produit favori demandé :
-    - nom : ...
-    - nutriscore : ...
-    ...
+    Voici le produit sélectionné :
+    - id (code-barre) : %(id)s
+    - nom : %(name)s
+    - nutriscore : %(nutrition_grade)s
+    - magasin(s) : %(stores)s
+    - URL: %(url)s

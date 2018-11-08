@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
+from sqlalchemy import and_
 from sqlalchemy.orm import Session, Query
 from sqlalchemy.ext.declarative.api import DeclarativeMeta
 from typing import NoReturn, List, Dict, Optional, Any, Generator, Union
 from OpenFoodFacts import Product
 from db.setup import (Product as DBProduct, Store as DBStore,
-                      Category as DBCategory)
+                      Category as DBCategory, HasCategory)
 
 
 class DB:
@@ -14,6 +15,7 @@ class DB:
         self.Product: DeclarativeMeta = DBProduct
         self.Store: DeclarativeMeta = DBStore
         self.Category: DeclarativeMeta = DBCategory
+        self.HasCategory: DeclarativeMeta = HasCategory
 
     def add(self, product: Product) -> DBProduct:
         stores: List[DBStore] = self._add_stores(product.stores)
@@ -107,3 +109,24 @@ class DB:
         return self.session.query(self.Product).filter(
             self.Product.id == product_id
         ).first()
+
+    def _get_substitutes_for(self, product_id: int) \
+            -> List[DBProduct]:
+        product: DBProduct = self._get_product_by_id(product_id)
+        query: Query = self.session.query(self.Product)
+        query.join((self.Category, self.Product.categories))
+        x = query.filter(
+            self.Product.nutrition_grade < product.nutrition_grade,
+            self.Category.id.in_(product.categories[0].id)
+        )
+        print(x)
+        exit()
+
+
+        # query: Query = self.session.query(self.Product)
+        # query.join(self.HasCategory).join(self.Category)
+        # substitutes: List[DBProduct] = query.filter(and_(
+        #     self.Product.nutrition_grade < product.nutrition_grade,
+        #     self.Category.id == product.categories[0].id
+        # )).all()
+        return substitutes

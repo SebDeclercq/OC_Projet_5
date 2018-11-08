@@ -11,6 +11,14 @@ class ConsoleUI(UI):
     def __init__(self) -> None:
         self.current_level = self.WELCOME
         self.page_contents: Dict[int, str] = {}
+        self.list_menus: List[int] = [
+            self.S_LIST_CATEGO, self.S_LIST_PRODUCTS,
+            self.S_LIST_SUBSTITUTES, self.F_LIST_FAVORITES
+        ]
+        self.product_pages: List[int] = [
+            self.S_PRODUCT_PAGE, self.F_PRODUCT_PAGE
+        ]
+
         text_file = os.path.join('ui', 'console', 'page_contents.yml')
         with open(text_file) as f:
             text: Dict[str, str] = yaml.load(f)
@@ -24,19 +32,18 @@ class ConsoleUI(UI):
             self.current_level = self.TOP_MENU
         print(self.page_contents[self.current_level])
         if data:
-            self.actions: Dict[int, int] = {}
-            list_menus: List[int] = [self.S_LIST_CATEGO,
-                                     self.S_LIST_PRODUCTS,
-                                     self.F_LIST_FAVORITES]
-            product_pages: List[int] = [self.S_PRODUCT_PAGE,
-                                        self.F_PRODUCT_PAGE]
-            if self.current_level in list_menus:
+            if self.current_level in self.list_menus:
+                self.actions: Dict[int, int] = {}
                 for idx, element in enumerate(data):
                     no_el: int = idx + 1
                     print('%s - %s' % (str(no_el), element[0]))
                     self.actions[no_el] = element[1]
-            elif self.current_level in product_pages:
+            elif self.current_level in self.product_pages:
                 print(self.page_contents[self.current_level] % data)
+                self.product_id: int = data['id']
+        else:
+            if self.current_level in self.list_menus:
+                print('\nAucun résultat trouvé\n')
         if self.current_level != self.TOP_MENU:
             print("0 - Retour à l'accueil")
         print("q - Quitter")
@@ -72,7 +79,13 @@ class ConsoleUI(UI):
                 ret.action = self.S_PRODUCT_PAGE
                 ret.id_query = self.actions[action]
             elif self.current_level == self.S_PRODUCT_PAGE:
-                ...
+                self.current_level = self.S_LIST_SUBSTITUTES
+                ret.action = self.S_LIST_SUBSTITUTES
+                ret.id_query = self.product_id
+            elif self.current_level == self.S_LIST_SUBSTITUTES:
+                self.current_level = self.S_PRODUCT_PAGE
+                ret.action = self.S_PRODUCT_PAGE
+                ret.id_query = self.actions[action]
             elif self.current_level == self.F_PRODUCT_PAGE:
                 ...
             else:

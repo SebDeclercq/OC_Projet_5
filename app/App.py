@@ -77,7 +77,21 @@ class App:
                     product: DBProduct = self._get_product_details(
                         uir.id_query
                     )
-                    data = product.__dict__
+                    data = {
+                        'id': product.id,
+                        'name': product.name.capitalize(),
+                        'nutrition_grade': product.nutrition_grade.upper(),
+                        'stores': ', '.join(
+                            [s.name for s in product.stores]
+                        ),
+                        'url': product.url,
+                    }
+            elif uir.action == UI.S_LIST_SUBSTITUTES:
+                if uir.id_query:
+                    substitutes: List[DBProduct] = self._get_substitutes(
+                        uir.id_query
+                    )
+                    data = [(p.name.capitalize(), p.id) for p in substitutes]
             self.ui.display(data)
 
     def _get_categories(self) -> List[DBCategory]:
@@ -88,3 +102,6 @@ class App:
 
     def _get_product_details(self, product_id: int) -> DBProduct:
         return self.db._get_product_by_id(product_id)
+
+    def _get_substitutes(self, product_id: int) -> List[DBProduct]:
+        return self.db._get_substitutes_for(product_id)
