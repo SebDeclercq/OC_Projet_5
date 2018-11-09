@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-from sqlalchemy import (Table, Column, Integer, ForeignKey,
-                        PrimaryKeyConstraint, create_engine)
+from sqlalchemy import Table, Column, Integer, ForeignKey, create_engine
 from sqlalchemy.ext.declarative import declarative_base, DeclarativeMeta
 from sqlalchemy.orm import sessionmaker, Session
 from typing import Tuple
@@ -25,17 +24,26 @@ def start_up(_DB_URI: str = 'sqlite:///:memory:') \
 
 IsSoldAt: Table = Table(
     'IsSoldAt', Base.metadata,
-    Column('product_id', Integer(), ForeignKey('Product.id'), nullable=False),
-    Column('store_id', Integer(), ForeignKey('Store.id'), nullable=False),
-    PrimaryKeyConstraint('product_id', 'store_id')
+    Column('product_id', Integer(), ForeignKey('Product.id'),
+           nullable=False, primary_key=True),
+    Column('store_id', Integer(), ForeignKey('Store.id'),
+           nullable=False, primary_key=True)
 )
 
 HasCategory: Table = Table(
     'HasCategory', Base.metadata,
-    Column('product_id', Integer(), ForeignKey('Product.id'), nullable=False),
+    Column('product_id', Integer(), ForeignKey('Product.id'),
+           nullable=False, primary_key=True),
     Column('category_id', Integer(), ForeignKey('Category.id'),
-           nullable=False),
-    PrimaryKeyConstraint('product_id', 'category_id')
+           nullable=False, primary_key=True)
+)
+
+IsFavoriteSubstituteOf: Table = Table(
+    'IsFavoriteSubstituteOf', Base.metadata,
+    Column('substitute_product_id', Integer(), ForeignKey('Product.id'),
+           nullable=False, primary_key=True),
+    Column('substituted_product_id', Integer(), ForeignKey('Product.id'),
+           nullable=False, primary_key=True)
 )
 
 from .Product import Product
