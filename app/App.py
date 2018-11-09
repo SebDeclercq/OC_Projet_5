@@ -111,7 +111,7 @@ class App:
                     }
             elif uir.action == UI.S_LIST_SUBSTITUTES:
                 if uir.id_query:
-                    substitutes: List[DBProduct] = self._get_substitutes(
+                    substitutes: List[DBProduct] = self._get_substitutes_for(
                         uir.id_query
                     )
                     data = [(p.name.capitalize(), p.id) for p in substitutes]
@@ -124,19 +124,44 @@ class App:
                         'substituted': favorites[0].name.capitalize(),
                         'substituter': favorites[1].name.capitalize(),
                     }
+            elif uir.action == UI.F_LIST_FAVORITES:
+                data = [(fav.name.capitalize(), fav.id)
+                        for fav in self._get_favorite_products()]
+            elif uir.action == UI.F_PRODUCT_PAGE:
+                if uir.id_query:
+                    product = self._get_product_details(
+                        uir.id_query
+                    )
+                    data = {
+                        'id': product.id,
+                        'name': product.name.capitalize(),
+                        'nutrition_grade': product.nutrition_grade.upper(),
+                        'stores': ', '.join(
+                            [s.name for s in product.stores]
+                        ),
+                        'url': product.url,
+                        'substitutes': '\n'.join(
+                            ['- ' + p.name + ' (NUTRISCORE: '
+                                + p.nutrition_grade.upper() + ')'
+                                    for p in product.substitutes]
+                        ),
+                    }
             self.ui.display(data)
 
     def _get_categories(self) -> List[DBCategory]:
         return self.db.get_categories()
 
     def _get_products(self, category_id: int) -> List[DBProduct]:
-        return self.db._get_products_by_category(category_id)
+        return self.db.get_products_by_category(category_id)
 
     def _get_product_details(self, product_id: int) -> DBProduct:
-        return self.db._get_product_by_id(product_id)
+        return self.db.get_product_by_id(product_id)
 
-    def _get_substitutes(self, product_id: int) -> List[DBProduct]:
-        return self.db._get_substitutes_for(product_id)
+    def _get_substitutes_for(self, product_id: int) -> List[DBProduct]:
+        return self.db.get_substitutes_for(product_id)
 
     def _add_favorite(self, ids: List[int]) -> List[DBProduct]:
-        return self.db._add_favorite(ids)
+        return self.db.add_favorite(ids)
+
+    def _get_favorite_products(self) -> List[DBProduct]:
+        return self.db.get_favorite_products()

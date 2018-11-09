@@ -99,27 +99,27 @@ class DB:
     def get_categories(self) -> List[DBCategory]:
         return self.session.query(self.Category)
 
-    def _get_products_by_category(self, category_id: int) -> List[DBProduct]:
+    def get_products_by_category(self, category_id: int) -> List[DBProduct]:
         return self.session.query(self.Category).filter(
             self.Category.id == category_id
         ).first().products
 
-    def _get_product_by_id(self, product_id: int) -> DBProduct:
+    def get_product_by_id(self, product_id: int) -> DBProduct:
         return self.session.query(self.Product).filter(
             self.Product.id == product_id
         ).first()
 
-    def _get_substitutes_for(self, product_id: int) \
+    def get_substitutes_for(self, product_id: int) \
             -> List[DBProduct]:
-        product: DBProduct = self._get_product_by_id(product_id)
+        product: DBProduct = self.get_product_by_id(product_id)
         query: Query = self.session.query(self.Product).\
             filter(self.Product.nutrition_grade < product.nutrition_grade).\
             filter(self.Product.categories.any(id=product.categories[0].id))
         return query.all()
 
-    def _add_favorite(self, ids: List[int]) -> List[DBProduct]:
-        substituted = self._get_product_by_id(ids[0])
-        substituter = self._get_product_by_id(ids[1])
+    def add_favorite(self, ids: List[int]) -> List[DBProduct]:
+        substituted = self.get_product_by_id(ids[0])
+        substituter = self.get_product_by_id(ids[1])
         try:
             substituted.substituted_by.append(substituter)
             substituter.substitutes.append(substituted)
@@ -127,3 +127,10 @@ class DB:
         except Exception as err:
             ...
         return [substituted, substituter]
+
+    def get_favorite_products(self) -> List[DBProduct]:
+        return self.session.query(self.Product).filter(
+            self.Product.substitutes.any(
+                self.Product.id
+            )
+        ).all()

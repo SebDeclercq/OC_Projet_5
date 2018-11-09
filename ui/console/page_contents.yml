@@ -44,12 +44,16 @@ F_LIST_FAVORITES: |
 
 F_PRODUCT_PAGE: |
 
-    Voici le produit sélectionné :
+    Voici le favori demandé:
     - id (code-barre) : %(id)s
     - nom : %(name)s
     - nutriscore : %(nutrition_grade)s
     - magasin(s) : %(stores)s
     - URL: %(url)s
+
+    Pour rappel, il substitue le(s) produit(s) suivant(s):
+    %(substitutes)s
+
 
 S_SAVED_FAVORITE: |
 

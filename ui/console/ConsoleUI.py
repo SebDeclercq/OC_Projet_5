@@ -72,6 +72,7 @@ class ConsoleUI(UI):
                     ret.action = self.S_LIST_CATEGO
                 elif action == 2:
                     self.current_level = self.F_LIST_FAVORITES
+                    ret.action = self.F_LIST_FAVORITES
                 else:
                     ret.message = self._error(action)
             elif self.current_level == self.S_LIST_CATEGO:
@@ -100,8 +101,10 @@ class ConsoleUI(UI):
                 self.current_level = self.S_PRODUCT_PAGE
                 ret.action = self.S_PRODUCT_PAGE
                 ret.id_query = self.history[-1][action]
-            elif self.current_level == self.F_PRODUCT_PAGE:
-                ...
+            elif self.current_level == self.F_LIST_FAVORITES:
+                self.current_level = self.F_PRODUCT_PAGE
+                ret.action = self.F_PRODUCT_PAGE
+                ret.id_query = self.history[-1][action]
             else:
                 ret.message = self._error(action)
         return ret
