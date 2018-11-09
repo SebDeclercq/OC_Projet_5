@@ -113,13 +113,7 @@ class DB:
     def _get_substitutes_for(self, product_id: int) \
             -> List[DBProduct]:
         product: DBProduct = self._get_product_by_id(product_id)
-
-        query: Query = self.session.query(self.Product).join(
-            self.HasCategory, self.Product.id == self.HasCategory.c.product_id
-        ).join(
-            self.Category, self.HasCategory.c.category_id == self.Category.id
-        ).filter(
-            self.Product.nutrition_grade < product.nutrition_grade,
-            self.Category.id == product.categories[0].id
-        )
+        query: Query = self.session.query(self.Product).\
+            filter(self.Product.nutrition_grade < product.nutrition_grade).\
+            filter(self.Product.categories.any(id=product.categories[0].id))
         return query.all()
