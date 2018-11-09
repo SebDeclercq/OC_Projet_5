@@ -16,7 +16,7 @@ class ConsoleUI(UI):
             self.S_LIST_SUBSTITUTES, self.F_LIST_FAVORITES
         ]
         self.product_pages: List[int] = [
-            self.S_PRODUCT_PAGE, self.F_PRODUCT_PAGE
+            self.S_PRODUCT_PAGE, self.F_PRODUCT_PAGE, self.S_SAVED_FAVORITE
         ]
         self.history: Any = []
         text_file: str = os.path.join('ui', 'console', 'page_contents.yml')
@@ -42,7 +42,8 @@ class ConsoleUI(UI):
                 self.history.append(actions)
             elif self.current_level in self.product_pages:
                 print(self.page_contents[self.current_level] % data)
-                self.history.append(data['id'])
+                if 'id' in data:
+                    self.history.append(data['id'])
         else:
             if self.current_level in self.list_menus:
                 print('\nAucun résultat trouvé\n')

@@ -117,7 +117,13 @@ class App:
                     data = [(p.name.capitalize(), p.id) for p in substitutes]
             elif uir.action == UI.S_SAVED_FAVORITE:
                 if uir.substitution_ids and len(uir.substitution_ids) == 2:
-                    self._add_favorite(uir.substitution_ids)
+                    favorites: List[DBProduct] = self._add_favorite(
+                        uir.substitution_ids
+                    )
+                    data = {
+                        'substituted': favorites[0].name.capitalize(),
+                        'substituter': favorites[1].name.capitalize(),
+                    }
             self.ui.display(data)
 
     def _get_categories(self) -> List[DBCategory]:
@@ -132,5 +138,5 @@ class App:
     def _get_substitutes(self, product_id: int) -> List[DBProduct]:
         return self.db._get_substitutes_for(product_id)
 
-    def _add_favorite(self, ids: List[int]) -> None:
-        self.db._add_favorite(ids)
+    def _add_favorite(self, ids: List[int]) -> List[DBProduct]:
+        return self.db._add_favorite(ids)

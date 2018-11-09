@@ -117,7 +117,7 @@ class DB:
             filter(self.Product.categories.any(id=product.categories[0].id))
         return query.all()
 
-    def _add_favorite(self, ids: List[int]) -> None:
+    def _add_favorite(self, ids: List[int]) -> List[DBProduct]:
         substituted = self._get_product_by_id(ids[0])
         substituter = self._get_product_by_id(ids[1])
         try:
@@ -126,3 +126,4 @@ class DB:
             self.session.commit()
         except Exception as err:
             ...
+        return [substituted, substituter]
