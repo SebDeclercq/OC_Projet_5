@@ -15,7 +15,7 @@ def usage() -> None:
         '\nUSAGE: ',
         '   python app.py [OPTIONS]',
         '\nOPTIONS:',
-        '   -h --help        Display this help guide',
+        '   -h --help        Displays this help guide',
         '   -d --dbname      Database to use (default : sqlite:///:memory:)',
         '   --setup_db       Sets up database (flag)',
         '   -u --update_db   Updates database content (flag)',
@@ -25,6 +25,7 @@ def usage() -> None:
         '   python 3.7+',
         '   requests',
         '   sqlalchemy',
+        '   pyyaml'
         ''
     )))
 

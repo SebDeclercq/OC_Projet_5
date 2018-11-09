@@ -65,6 +65,10 @@ class App:
         return categories
 
     def _connect_db(self) -> DB:
+        if self.params.dbname == 'DEFAULT':
+            dbname: str = ('mysql+mysqlconnector://OCP4:OCP4@localhost/OCP4'
+                           '@charset=utf8mb4_unicode_ci')
+            ...
         base, session = db.setup.start_up(self.params.dbname)
         self.db = DB(base, session)
         return self.db

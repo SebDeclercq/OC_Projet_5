@@ -7,7 +7,7 @@ from typing import Optional
 class Params:
     setup_db: bool = False
     update_db: bool = False
-    dbname: str = 'sqlite:///:memory:'
+    dbname: str = 'DEFAULT'
     search: Optional[str] = None
     category: Optional[str] = None
     tag: Optional[str] = None
