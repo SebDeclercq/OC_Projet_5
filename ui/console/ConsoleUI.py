@@ -20,7 +20,7 @@ class ConsoleUI(UI):
         ]
 
         text_file = os.path.join('ui', 'console', 'page_contents.yml')
-        with open(text_file) as f:
+        with open(text_file, encoding='utf-8') as f:
             text: Dict[str, str] = yaml.load(f)
         for page_name, page_content in text.items():
             page_level = getattr(self, page_name)
