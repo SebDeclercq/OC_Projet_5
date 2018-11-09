@@ -13,6 +13,7 @@ class UI(ABC):
     F_LIST_FAVORITES: int = 6  # F_ for "favorite"
     F_PRODUCT_PAGE: int = 7
     S_LIST_SUBSTITUTES: int = 8
+    S_SAVED_FAVORITE: int = 9
     QUIT: int = -1
 
     @abstractmethod

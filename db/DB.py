@@ -5,7 +5,7 @@ from sqlalchemy.ext.declarative.api import DeclarativeMeta
 from typing import NoReturn, List, Dict, Optional, Any, Generator, Union
 from OpenFoodFacts import Product
 from db.setup import (Product as DBProduct, Store as DBStore,
-                      Category as DBCategory, HasCategory)
+                      Category as DBCategory)
 
 
 class DB:
@@ -15,7 +15,6 @@ class DB:
         self.Product: DeclarativeMeta = DBProduct
         self.Store: DeclarativeMeta = DBStore
         self.Category: DeclarativeMeta = DBCategory
-        self.HasCategory: DeclarativeMeta = HasCategory
 
     def add(self, product: Product) -> DBProduct:
         stores: List[DBStore] = self._add_stores(product.stores)
@@ -117,3 +116,13 @@ class DB:
             filter(self.Product.nutrition_grade < product.nutrition_grade).\
             filter(self.Product.categories.any(id=product.categories[0].id))
         return query.all()
+
+    def _add_favorite(self, ids: List[int]) -> None:
+        substituted = self._get_product_by_id(ids[0])
+        substituter = self._get_product_by_id(ids[1])
+        try:
+            substituted.substituted_by.append(substituter)
+            substituter.substitutes.append(substituted)
+            self.session.commit()
+        except Exception as err:
+            ...

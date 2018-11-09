@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship, backref
-from db.setup import Base, IsSoldAt, HasCategory, repr_mixin
+from db.setup import (Base, IsSoldAt, HasCategory,
+                      IsFavoriteSubstituteOf, repr_mixin)
 
 
 class Product(Base, repr_mixin):
@@ -14,3 +15,15 @@ class Product(Base, repr_mixin):
     stores = relationship('Store', secondary=IsSoldAt, backref='Product')
     categories = relationship('Category', secondary=HasCategory,
                               backref='Product')
+    substituted_by = relationship(
+        'Product', secondary=IsFavoriteSubstituteOf,
+        primaryjoin=id == IsFavoriteSubstituteOf.c.substituted_product_id,
+        secondaryjoin=id == IsFavoriteSubstituteOf.c.substitute_product_id,
+        backref='SubtituteProduct'
+    )
+    substitutes = relationship(
+        'Product', secondary=IsFavoriteSubstituteOf,
+        primaryjoin=id == IsFavoriteSubstituteOf.c.substitute_product_id,
+        secondaryjoin=id == IsFavoriteSubstituteOf.c.substituted_product_id,
+        backref='SubtitutedProduct'
+    )

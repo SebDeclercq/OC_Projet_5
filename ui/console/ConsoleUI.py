@@ -9,7 +9,7 @@ from ..UIReturn import UIReturn
 
 class ConsoleUI(UI):
     def __init__(self) -> None:
-        self.current_level = self.WELCOME
+        self.current_level: int = self.WELCOME
         self.page_contents: Dict[int, str] = {}
         self.list_menus: List[int] = [
             self.S_LIST_CATEGO, self.S_LIST_PRODUCTS,
@@ -18,8 +18,8 @@ class ConsoleUI(UI):
         self.product_pages: List[int] = [
             self.S_PRODUCT_PAGE, self.F_PRODUCT_PAGE
         ]
-
-        text_file = os.path.join('ui', 'console', 'page_contents.yml')
+        self.history: Any = []
+        text_file: str = os.path.join('ui', 'console', 'page_contents.yml')
         with open(text_file, encoding='utf-8') as f:
             text: Dict[str, str] = yaml.load(f)
         for page_name, page_content in text.items():
@@ -30,17 +30,19 @@ class ConsoleUI(UI):
         if self.current_level == self.WELCOME:
             print(self.page_contents[self.WELCOME])
             self.current_level = self.TOP_MENU
-        print(self.page_contents[self.current_level])
+        if self.current_level not in self.product_pages:
+            print(self.page_contents[self.current_level])
         if data:
             if self.current_level in self.list_menus:
-                self.actions: Dict[int, int] = {}
+                actions: Dict[int, int] = {}
                 for idx, element in enumerate(data):
                     no_el: int = idx + 1
                     print('%s - %s' % (str(no_el), element[0]))
-                    self.actions[no_el] = element[1]
+                    actions[no_el] = element[1]
+                self.history.append(actions)
             elif self.current_level in self.product_pages:
                 print(self.page_contents[self.current_level] % data)
-                self.product_id: int = data['id']
+                self.history.append(data['id'])
         else:
             if self.current_level in self.list_menus:
                 print('\nAucun résultat trouvé\n')
@@ -62,6 +64,7 @@ class ConsoleUI(UI):
                 action: int = int(command)
             if action == self.GO_BACK_TO_TOP_MENU:
                 self.current_level = self.WELCOME
+                self.history = []  # Clear history every time you meet the top
             elif self.current_level == self.TOP_MENU:
                 if action == 1:
                     self.current_level = self.S_LIST_CATEGO
@@ -73,19 +76,29 @@ class ConsoleUI(UI):
             elif self.current_level == self.S_LIST_CATEGO:
                 self.current_level = self.S_LIST_PRODUCTS
                 ret.action = self.S_LIST_PRODUCTS
-                ret.id_query = self.actions[action]
+                ret.id_query = self.history[-1][action]
             elif self.current_level == self.S_LIST_PRODUCTS:
                 self.current_level = self.S_PRODUCT_PAGE
                 ret.action = self.S_PRODUCT_PAGE
-                ret.id_query = self.actions[action]
+                ret.id_query = self.history[-1][action]
             elif self.current_level == self.S_PRODUCT_PAGE:
-                self.current_level = self.S_LIST_SUBSTITUTES
-                ret.action = self.S_LIST_SUBSTITUTES
-                ret.id_query = self.product_id
+                if action == 1:
+                    self.current_level = self.S_LIST_SUBSTITUTES
+                    ret.action = self.S_LIST_SUBSTITUTES
+                    ret.id_query = self.history[-1]
+                elif action == 2:
+                    self.current_level = self.S_SAVED_FAVORITE
+                    ret.action = self.S_SAVED_FAVORITE
+                    ret.substitution_ids = []
+                    for p_id in (self.history[-3], self.history[-1]):
+                        if isinstance(p_id, int):
+                            ret.substitution_ids.append(p_id)
+                    if len(ret.substitution_ids) != 2:
+                        ...
             elif self.current_level == self.S_LIST_SUBSTITUTES:
                 self.current_level = self.S_PRODUCT_PAGE
                 ret.action = self.S_PRODUCT_PAGE
-                ret.id_query = self.actions[action]
+                ret.id_query = self.history[-1][action]
             elif self.current_level == self.F_PRODUCT_PAGE:
                 ...
             else:
