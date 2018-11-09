@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-from sqlalchemy import and_
 from sqlalchemy.orm import Session, Query
 from sqlalchemy.ext.declarative.api import DeclarativeMeta
 from typing import NoReturn, List, Dict, Optional, Any, Generator, Union
@@ -120,12 +119,9 @@ class DB:
     def add_favorite(self, ids: List[int]) -> List[DBProduct]:
         substituted = self.get_product_by_id(ids[0])
         substituter = self.get_product_by_id(ids[1])
-        try:
-            substituted.substituted_by.append(substituter)
-            substituter.substitutes.append(substituted)
-            self.session.commit()
-        except Exception as err:
-            ...
+        substituted.substituted_by.append(substituter)
+        substituter.substitutes.append(substituted)
+        self.session.commit()
         return [substituted, substituter]
 
     def get_favorite_products(self) -> List[DBProduct]:

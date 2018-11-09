@@ -105,14 +105,17 @@ class ConsoleUI(UI):
                     ret.action = self.S_LIST_SUBSTITUTES
                     ret.id_query = self.history[-1]
                 elif action == 2:
-                    self.current_level = self.S_SAVED_FAVORITE
-                    ret.action = self.S_SAVED_FAVORITE
                     ret.substitution_ids = []
                     for p_id in (self.history[-3], self.history[-1]):
                         if isinstance(p_id, int):
                             ret.substitution_ids.append(p_id)
                     if len(ret.substitution_ids) != 2:
-                        ...
+                        ret.message = ('Vous ne pouvez pas sauvegarder '
+                                       'en favori un produit non substitué')
+                        self.error = True
+                    else:
+                        self.current_level = self.S_SAVED_FAVORITE
+                        ret.action = self.S_SAVED_FAVORITE
                 else:
                     ret.message = self._error(action)
             elif self.current_level == self.S_LIST_SUBSTITUTES:
@@ -123,7 +126,7 @@ class ConsoleUI(UI):
                 else:
                     ret.message = self._error(action)
             elif self.current_level == self.F_LIST_FAVORITES:
-                if action in self.history[-1]:
+                if self.history and action in self.history[-1]:
                     self.current_level = self.F_PRODUCT_PAGE
                     ret.action = self.F_PRODUCT_PAGE
                     ret.id_query = self.history[-1][action]
@@ -131,6 +134,8 @@ class ConsoleUI(UI):
                     ret.message = self._error(action)
             else:
                 ret.message = self._error(action)
+        if ret.message:  # bold + highlight red
+            ret.message = '\033[1m\033[41m' + ret.message + '\033[0m'
         return ret
 
     def _error(self, action: Union[str, int]) -> str:
