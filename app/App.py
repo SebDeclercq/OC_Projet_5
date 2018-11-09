@@ -6,6 +6,7 @@ from app import Params
 from OpenFoodFacts import API, Product
 from ui import UI, UIFactory, UIReturn
 import yaml
+import os
 
 
 class App:
@@ -21,10 +22,32 @@ class App:
             self._interactive_mode()
         else:
             self._db_mode()
+            if self.params.setup_db:
+                print('Création de la base de données OK')
+            elif self.params.update_db:
+                print('Mise à jour de la base de données OK')
 
     def _db_mode(self) -> None:
         self.api = API(verbose=self.params.verbose)
-        for category in self._categories:
+        categories = self._categories
+        if self.params.setup_db:
+            print('Cette opération va supprimer toutes les données '
+                  'existantes. Continuer ?  [oN]')
+            command: str = input('> ').lower()
+            if command == 'o':
+                if 'sqlite' in self.params.dbname:
+                    db_filename = self.params.dbname[
+                        self.params.dbname.find('///') + 3:
+                    ]
+                    os.remove(db_filename)
+            else:
+                print('Abandon')
+                exit()
+            self._connect_db()  # Reconnect
+        else:
+            # Overwrites collected categories from YAML config file
+            categories = [c.name for c in self.db.get_categories()]
+        for category in categories:
             for product in self._search_api(category):
                 self.db.add(product)
 
@@ -32,14 +55,14 @@ class App:
     def _categories(self) -> List[str]:
         with open(self.params.categories_file) as catego:
             data: Dict[str, Any] = yaml.load(catego)
-        self.categories: List[str] = data['categories']
+        categories: List[str] = data['categories']
         self.max_products_by_category: int = data['max_products_by_category']
         if self.max_products_by_category > 100:
             # 100 products MAX by category
             self.max_nb_products_by_category = 100
-        if len(self.categories) > 5:
-            self.categories = self.categories[:4]  # 5 categories MAX
-        return self.categories
+        if len(categories) > 5:
+            categories = categories[:4]  # 5 categories MAX
+        return categories
 
     def _connect_db(self) -> DB:
         base, session = db.setup.start_up(self.params.dbname)

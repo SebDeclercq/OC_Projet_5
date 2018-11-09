@@ -6,6 +6,7 @@ from typing import Optional
 @dataclass
 class Params:
     setup_db: bool = False
+    update_db: bool = False
     dbname: str = 'sqlite:///:memory:'
     search: Optional[str] = None
     category: Optional[str] = None

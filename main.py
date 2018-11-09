@@ -45,10 +45,10 @@ def parse_options() -> Params:
     for option, arg in options:
         if option in ('-d', '--dbname'):
             params['dbname'] = arg
-        elif option in ('--setup_db', '-u', '--update_db'):
-            # Those two options do the same things,
-            # both are available for human-reading purpose only
+        elif option == '--setup_db':
             params['setup_db'] = True
+        elif option in ('-u', '--update_db'):
+            params['update_db'] = True
         elif option == 'categories':
             params['categories_file'] = arg
         elif option in ('-i', '--interactive'):
