@@ -58,4 +58,5 @@ F_PRODUCT_PAGE: |
 S_SAVED_FAVORITE: |
 
     Substitut sauvegardé !
-    "%(substituted)s" est préféré à "%(substituter)s" et sauvegardé en base.
+    
+    "%(substituter)s" est préféré à "%(substituted)s" et sauvegardé en base.
