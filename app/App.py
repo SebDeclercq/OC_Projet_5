@@ -143,7 +143,7 @@ class App:
                         'substitutes': '\n'.join(
                             ['- ' + p.name + ' (NUTRISCORE: '
                                 + p.nutrition_grade.upper() + ')'
-                                    for p in product.substitutes]
+                                for p in product.substitutes]
                         ),
                     }
             self.ui.display(data)
