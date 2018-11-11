@@ -7,7 +7,9 @@ from typing import Optional
 class Params:
     setup_db: bool = False
     update_db: bool = False
-    dbname: str = 'DEFAULT'
+    dbname: str = (
+        'mysql+mysqlconnector://OCP5:OCP5@localhost/OCP5?charset=utf8mb4'
+    )
     search: Optional[str] = None
     category: Optional[str] = None
     tag: Optional[str] = None

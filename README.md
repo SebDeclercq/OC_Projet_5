@@ -9,3 +9,15 @@ It will be based upon a pipenv environment which means that to build a new insta
 To deploy the required environment, use `pipenv install`. This will setup your directory with the components used in the piece of software (by reading configuration files such as the Pipfile you may see in this repo).
 
 To launch the python script, use `pipenv run python [script.py]` (scripts yet to come).
+
+## Basic MySQL Config for P5
+
+Please note that basic configuration used to run this P5 script with MySQL is the following :
+
+```sql
+CREATE DATABASE OCP5;
+CREATE USER 'OCP5'@'localhost' IDENTIFIED BY 'OCP5';
+GRANT ALL PRIVILEGES on OCP5.* TO 'OCP5'@'localhost' IDENTIFIED BY 'OCP5';
+```
+
+May you want to change this configuration, further documentation will be soon provided (currently no options are available).

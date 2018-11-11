@@ -35,11 +35,7 @@ class App:
                   'existantes. Continuer ?  [oN]')
             command: str = input('> ').lower()
             if command == 'o':
-                if 'sqlite' in self.params.dbname:
-                    db_filename = self.params.dbname[
-                        self.params.dbname.find('///') + 3:
-                    ]
-                    os.remove(db_filename)
+                db.setup.remove_all(self.params.dbname)
             else:
                 print('Abandon')
                 exit()
@@ -65,10 +61,6 @@ class App:
         return categories
 
     def _connect_db(self) -> DB:
-        if self.params.dbname == 'DEFAULT':
-            dbname: str = ('mysql+mysqlconnector://OCP4:OCP4@localhost/OCP4'
-                           '@charset=utf8mb4_unicode_ci')
-            ...
         base, session = db.setup.start_up(self.params.dbname)
         self.db = DB(base, session)
         return self.db
