@@ -35,7 +35,7 @@ class App:
                   'existantes. Continuer ?  [oN]')
             command: str = input('> ').lower()
             if command == 'o':
-                db.setup.remove_all(self.params.dbname)
+                db.setup.remove_all(self.params.db_uri)
             else:
                 print('Abandon')
                 exit()
@@ -61,7 +61,7 @@ class App:
         return categories
 
     def _connect_db(self) -> DB:
-        base, session = db.setup.start_up(self.params.dbname)
+        base, session = db.setup.start_up(self.params.db_uri)
         self.db = DB(base, session)
         return self.db
 

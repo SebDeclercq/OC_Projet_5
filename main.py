@@ -10,22 +10,29 @@ def usage() -> None:
     print('\n'.join((
         '\nDESCRIPTION: ',
         'This main script is intended to pilot all processing actions for ',
-        'the P5 of OpenClassRooms DA Python. It currently creates the ',
-        'database or updates it if the correponding options are provided.',
+        'the P5 of OpenClassRooms DA Python. It creates the database or ',
+        'updates it if the correponding options are provided. Its main ',
+        'goals are to interact with collected OpenFoodFacts data in order ',
+        'to select healthier products than your regular.',
         '\nUSAGE: ',
-        '   python app.py [OPTIONS]',
-        '\nOPTIONS:',
-        '   -h --help        Displays this help guide',
-        '   -d --dbname      Database to use (default : sqlite:///:memory:)',
+        '   python main.py [OPTIONS]',
+        '\nMODES:',
         '   --setup_db       Sets up database (flag)',
-        '   -u --update_db   Updates database content (flag)',
-        '   --categories     File containing the wished categories in database',
-        '   -i --interactive Active interactive mode (flag)',
+        '   --update_db      Updates database content (flag)',
+        '   -i --interactive DEFAULT: Active interactive mode (flag)',
+        '\nOPTIONS:',
+        '   --categories File containing the wished categories in database',
+        '   -u --user    Username for MySQL database (useless for SQLite)',
+        '   -p --pass    Password for MySQL database (useless for SQLite)',
+        '   -d --dbname  Database to use (for SQLite: "sqlite:///[DBNAME]")',
+        '',
+        '   -h --help    Displays this help guide',
         '\nREQUIREMENTS:',
         '   python 3.7+',
         '   requests',
         '   sqlalchemy',
-        '   pyyaml'
+        '   pyyaml',
+        '   mysql-connector-python',
         ''
     )))
 
@@ -33,32 +40,45 @@ def usage() -> None:
 def parse_options() -> Params:
     params: Dict[str, Any] = {}
     try:
-        options, args = getopt.getopt(sys.argv[1:], 'hd:vui', [
-                                        'help', 'dbname', 'setup_db',
-                                        'verbose', 'update_db', 'categories',
-                                        'interactive',
-                                      ])
+        options, args = getopt.getopt(
+            sys.argv[1:], 'ic:u:p:d:h', [
+                'setup_db', 'update_db', 'interactive',
+                'categories', 'user', 'pass', 'dbname',
+                'help'
+            ]
+        )
     except getopt.GetoptError as err:
         print('\033[1mSome error occurred : "%s"\033[0m' % str(err))
         usage()
         exit()
-    flags = (option[0] for option in options)
+    modes = []
     for option, arg in options:
-        if option in ('-d', '--dbname'):
-            params['dbname'] = arg
-        elif option == '--setup_db':
+        # MODES
+        if option == '--setup_db':
             params['setup_db'] = True
-        elif option in ('-u', '--update_db'):
+            modes.append('setup_db')
+        elif option == '--update_db':
             params['update_db'] = True
-        elif option == 'categories':
-            params['categories_file'] = arg
+            modes.append('update_db')
         elif option in ('-i', '--interactive'):
             params['interactive'] = True
+            modes.append('interactive')
+        # OPTIONS
+        elif option in ('-u', '--user'):
+            params['user'] = arg
+        elif option in ('-p', '--pass'):
+            params['password'] = arg
+        elif option in ('-d', '--dbname'):
+            params['dbname'] = arg
+        elif option == 'categories':
+            params['categories_file'] = arg
         elif option in ('-h', '--help'):
             usage()
             exit()
-        elif option in ('-v', '--verbose'):
-            params['verbose'] = True
+    if len(modes) != 1:  # If more (or no) modes selected
+        for mode in modes:
+            params[mode] = False
+        params['interactive'] = True  # Use interactive as default
     return Params(**params)
 
 
