@@ -1,0 +1,62 @@
+WELCOME: |
+
+    Bienvenue dans notre programme de substitution alimentaire !
+    Envie de mieux manger ? De choisir des produits plus sains ?
+    Ce logiciel est fait pour vous ! Laissez-vous guider à travers
+    nos données et sauvegarder vos produits favoris !
+
+TOP_MENU: |
+
+    1 - Quel aliment souhaitez-vous remplacer ?
+    2 - Retrouver mes aliments substitués.
+
+S_LIST_CATEGO: |
+
+    Voici la liste des catégories disponibles. Veuillez sélectionner
+    une catégorie à l'aide de son numéro d'ordre.
+
+S_LIST_PRODUCTS: |
+
+    Voici la liste des produits disponibles. Veuillez sélectionner
+    un produit à l'aide de son numéro d'ordre.
+
+S_PRODUCT_PAGE: |
+
+    Voici le produit sélectionné :
+    - id (code-barre) : %(id)s
+    - nom : %(name)s
+    - nutriscore : %(nutrition_grade)s
+    - magasin(s) : %(stores)s
+    - URL: %(url)s
+
+    1 - Trouver des substituts plus sains
+    2 - Sauvegarder dans les favoris
+
+S_LIST_SUBSTITUTES: |
+
+    Voici la liste des substituts disponibles. Veuillez sélectionner
+    un produit à l'aide de son numéro d'ordre.
+
+F_LIST_FAVORITES: |
+
+    Voici la liste des favoris disponibles. Veuillez sélectionner
+    un produit à l'aide de son numéro d'ordre.
+
+F_PRODUCT_PAGE: |
+
+    Voici le favori demandé:
+    - id (code-barre) : %(id)s
+    - nom : %(name)s
+    - nutriscore : %(nutrition_grade)s
+    - magasin(s) : %(stores)s
+    - URL: %(url)s
+
+    Pour rappel, il substitue le(s) produit(s) suivant(s):
+    %(substitutes)s
+
+
+S_SAVED_FAVORITE: |
+
+    Substitut sauvegardé !
+    
+    "%(substituter)s" est préféré à "%(substituted)s" et sauvegardé en base.

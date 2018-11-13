@@ -1,62 +1,96 @@
 #!/usr/bin/env python3
 from typing import NoReturn, List, Dict, Optional, Any, Generator
-from sqlalchemy.orm import Session
-import db.setup
-from db import Base
 import getopt
 import sys
+from app import App, Params
+import os
 
 
-def usage() -> NoReturn:
+def usage() -> None:
     print('\n'.join((
         '\nDESCRIPTION: ',
         'This main script is intended to pilot all processing actions for ',
-        'the P5 of OpenClassRooms DA Python. It currently creates the ',
-        'database if the correponding options are provided.',
+        'the P5 of OpenClassRooms DA Python. It creates the database or ',
+        'updates it if the correponding options are provided. Its main ',
+        'goals are to interact with collected OpenFoodFacts data in order ',
+        'to select healthier products than your regular.',
         '\nUSAGE: ',
-        '   python app.py [OPTIONS]',
+        '   python main.py [OPTIONS]',
+        '\nMODES:',
+        '   --setup_db       Sets up database (flag)',
+        '   --update_db      Updates database content (flag)',
+        '   -i --interactive DEFAULT: Active interactive mode (flag)',
         '\nOPTIONS:',
-        '   -h --help     Display this help guide',
-        '   -d --dbname   Database to use (default : sqlite:///:memory:)'
-        '   --setup_db    Setup Database (flag)'
+        '   --categories File containing the wished categories in database',
+        '   -u --user    Username for MySQL database (useless for SQLite)',
+        '   -p --pass    Password for MySQL database (useless for SQLite)',
+        '   -d --dbname  Database to use (for SQLite: "sqlite:///[DBNAME]")',
+        '',
+        '   -h --help    Displays this help guide',
         '\nREQUIREMENTS:',
         '   python 3.7+',
         '   requests',
         '   sqlalchemy',
+        '   pyyaml',
+        '   mysql-connector-python',
         ''
     )))
 
 
-def parse_options() -> Dict[str, Any]:
-    params: Dict[str, Any] = {
-        'dbname': 'sqlite:///:memory:',
-        'setup_db': False
-    }
+def parse_options() -> Params:
+    params: Dict[str, Any] = {}
     try:
-        options, args = getopt.getopt(sys.argv[1:], 'hd:', [
-                                        'help', 'dbname', 'setup_db'
-                                      ])
+        options, args = getopt.getopt(
+            sys.argv[1:], 'ic:u:p:d:h', [
+                'setup_db', 'update_db', 'interactive',
+                'categories', 'user', 'pass', 'dbname',
+                'help'
+            ]
+        )
     except getopt.GetoptError as err:
         print('\033[1mSome error occurred : "%s"\033[0m' % str(err))
         usage()
         exit()
+    modes = []
     for option, arg in options:
-        if option in ('-d', '--dbname'):
-            params['dbname'] = arg
-        elif option == '--setup_db':
+        # MODES
+        if option == '--setup_db':
             params['setup_db'] = True
+            modes.append('setup_db')
+        elif option == '--update_db':
+            params['update_db'] = True
+            modes.append('update_db')
+        elif option in ('-i', '--interactive'):
+            params['interactive'] = True
+            modes.append('interactive')
+        # OPTIONS
+        elif option in ('-u', '--user'):
+            params['user'] = arg
+        elif option in ('-p', '--pass'):
+            params['password'] = arg
+        elif option in ('-d', '--dbname'):
+            params['dbname'] = arg
+        elif option == 'categories':
+            params['categories_file'] = arg
         elif option in ('-h', '--help'):
             usage()
             exit()
-    return params
+    if len(modes) != 1:  # If more (or no) modes selected
+        for mode in modes:
+            params[mode] = False
+        params['interactive'] = True  # Use interactive as default
+    return Params(**params)
 
 
-def main() -> NoReturn:
-    params = parse_options()
-    if params['setup_db'] or params['dbname'] == 'sqlite:///:memory:':
-        db.setup.start_up(params['dbname'])
-    else:
-        session: Session = db.connect(params['dbname'])
+def main() -> None:
+    params: Params = parse_options()
+    app: App = App(params)
+    try:
+        app.run()
+    except Exception as err:
+        print(err)
+        exit()
+
 
 if __name__ == '__main__':
     main()

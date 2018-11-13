@@ -9,5 +9,5 @@ class Store(Base, repr_mixin):
 
     id = Column(Integer(), autoincrement=True,
                 primary_key=True, nullable=False)
-    name = Column(String(), nullable=False)
+    name = Column(String(255), nullable=False, unique=True)
     products = relationship('Product', secondary=IsSoldAt, backref='Store')

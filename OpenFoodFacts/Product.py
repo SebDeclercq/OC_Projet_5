@@ -5,9 +5,10 @@ from typing import List
 
 @dataclass
 class Product:
-    product_name: str
+    id: int
+    name: str
     brands: str
     nutrition_grades: str
     url: str
-    stores: str
+    stores: List[str]
     categories: List[str]
