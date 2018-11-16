@@ -29,9 +29,6 @@ S_PRODUCT_PAGE: |
     - magasin(s) : %(stores)s
     - URL: %(url)s
 
-    1   - Trouver des substituts plus sains
-    2   - Sauvegarder dans les favoris
-
 S_LIST_SUBSTITUTES: |
 
     Voici la liste des substituts disponibles. Veuillez sélectionner

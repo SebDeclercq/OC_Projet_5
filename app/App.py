@@ -98,115 +98,125 @@ class App:
             yield product
 
     def _interactive_mode(self) -> Any:
-        '''Private method piloting user interaction.
-        This method relies on the content of a UIReturn object,
-        which contains diversed data, depending on the current
-        state of the UI.'''
         self.ui: UI = UIFactory.factory(self.params.ui)
-        self.ui.display()
-        while True:  # Until asked, never stop
-            uir: UIReturn = self.ui.interact()
-            data: Any = None
-            if uir.message:  # If there's a message to display
-                print(uir.message)
-            if uir.action == UI.QUIT:  # If exit asked
-                exit()
-            elif uir.action == UI.S_LIST_CATEGO:
-                # If the list of categories is needed,
-                # returns their names (for display) and ids
-                # (for further interaction)
-                data = self._get_categories()
-            elif uir.action == UI.S_LIST_PRODUCTS:
-                # If the list of products is needed,
-                # returns their names (for display) and ids
-                # (for further interaction)
-                if uir.id_query:
-                    data = self._get_products(uir.id_query)
-            elif uir.action == UI.S_PRODUCT_PAGE:
-                # If the details of a product is needed,
-                # collects them with its id, converts the data
-                # to the needed format and returns it
-                if uir.id_query:
-                    product: DBProduct = self._get_product_details(
-                        uir.id_query
-                    )
-                    data = {
-                        'id': product.id,
-                        'name': product.name.capitalize(),
-                        'nutrition_grade': product.nutrition_grade.upper(),
-                        'stores': ', '.join(
-                            [s.name for s in product.stores]
-                        ),
-                        'url': product.url,
-                    }
-            elif uir.action == UI.S_LIST_SUBSTITUTES:
-                # If the list of substitues is needed,
-                # collects them with the id of the product to substitute
-                # and returns their names (for display) and ids
-                # (for further interaction)
-                if uir.id_query:
-                    data = self._get_substitutes_for(uir.id_query)
-            elif uir.action == UI.S_SAVED_FAVORITE:
-                # For saving a new favorite substitution,
-                # the ids of the substituted product and its
-                # substitute is required. Returns both names.
-                if uir.substitution_ids and len(uir.substitution_ids) == 2:
-                    favorites: List[DBProduct] = self._add_favorite(
-                        uir.substitution_ids
-                    )
-                    data = {
-                        'substituted': favorites[0].name.capitalize(),
-                        'substituter': favorites[1].name.capitalize(),
-                    }
-            elif uir.action == UI.F_LIST_FAVORITES:
-                # If the list of favorites is needed,
-                # collects them with the id of the product to substitute
-                # and returns their names (for display) and ids
-                # (for further interaction)
-                data = self._get_favorite_products()
-            elif uir.action == UI.F_PRODUCT_PAGE:
-                # If the details of a product is needed,
-                # collects them with its id, converts the data
-                # to the needed format and returns it
-                if uir.id_query:
-                    product = self._get_product_details(
-                        uir.id_query
-                    )
-                    data = {
-                        'id': product.id,
-                        'name': product.name.capitalize(),
-                        'nutrition_grade': product.nutrition_grade.upper(),
-                        'stores': ', '.join(
-                            [s.name for s in product.stores]
-                        ),
-                        'url': product.url,
-                        'substitutes': '\n'.join(
-                            ['- ' + p.name + ' (NUTRISCORE: '
-                                + p.nutrition_grade.upper() + ')'
-                                for p in product.substitutes]
-                        ),
-                    }
-            # Displays refreshed "page" with optional data
-            self.ui.display(data)
+        self.ui.start(self)
 
-    def _get_categories(self) -> List[DBCategory]:
+    # def _interactive_mode(self) -> Any:
+    #     '''Private method piloting user interaction.
+    #     This method relies on the content of a UIReturn object,
+    #     which contains diversed data, depending on the current
+    #     state of the UI.'''
+    #     self.ui: UI = UIFactory.factory(self.params.ui)
+    #     self.ui.display()
+    #     while True:  # Until asked, never stop
+    #         uir: UIReturn = self.ui.interact()
+    #         data: Any = None
+    #         if uir.message:  # If there's a message to display
+    #             print(uir.message)
+    #         if uir.action == UI.QUIT:  # If exit asked
+    #             exit()
+    #         elif uir.action == UI.S_LIST_CATEGO:
+    #             # If the list of categories is needed,
+    #             # returns their names (for display) and ids
+    #             # (for further interaction)
+    #             data = self._get_categories()
+    #         elif uir.action == UI.S_LIST_PRODUCTS:
+    #             # If the list of products is needed,
+    #             # returns their names (for display) and ids
+    #             # (for further interaction)
+    #             if uir.id_query:
+    #                 data = self._get_products(uir.id_query)
+    #         elif uir.action == UI.S_PRODUCT_PAGE:
+    #             # If the details of a product is needed,
+    #             # collects them with its id, converts the data
+    #             # to the needed format and returns it
+    #             if uir.id_query:
+    #                 product: DBProduct = self._get_product_details(
+    #                     uir.id_query
+    #                 )
+    #                 data = {
+    #                     'id': product.id,
+    #                     'name': product.name.capitalize(),
+    #                     'nutrition_grade': product.nutrition_grade.upper(),
+    #                     'stores': ', '.join(
+    #                         [s.name for s in product.stores]
+    #                     ),
+    #                     'url': product.url,
+    #                 }
+    #         elif uir.action == UI.S_LIST_SUBSTITUTES:
+    #             # If the list of substitues is needed,
+    #             # collects them with the id of the product to substitute
+    #             # and returns their names (for display) and ids
+    #             # (for further interaction)
+    #             if uir.id_query:
+    #                 data = self._get_substitutes_for(uir.id_query)
+    #         elif uir.action == UI.S_SAVED_FAVORITE:
+    #             # For saving a new favorite substitution,
+    #             # the ids of the substituted product and its
+    #             # substitute is required. Returns both names.
+    #             if uir.substitution_ids and len(uir.substitution_ids) == 2:
+    #                 favorites: List[DBProduct] = self._add_favorite(
+    #                     uir.substitution_ids
+    #                 )
+    #                 data = {
+    #                     'substituted': favorites[0].name.capitalize(),
+    #                     'substituter': favorites[1].name.capitalize(),
+    #                 }
+    #         elif uir.action == UI.F_LIST_FAVORITES:
+    #             # If the list of favorites is needed,
+    #             # collects them with the id of the product to substitute
+    #             # and returns their names (for display) and ids
+    #             # (for further interaction)
+    #             data = self._get_favorite_products()
+    #         elif uir.action == UI.F_PRODUCT_PAGE:
+    #             # If the details of a product is needed,
+    #             # collects them with its id, converts the data
+    #             # to the needed format and returns it
+    #             if uir.id_query:
+    #                 product = self._get_product_details(
+    #                     uir.id_query
+    #                 )
+    #                 data = {
+    #                     'id': product.id,
+    #                     'name': product.name.capitalize(),
+    #                     'nutrition_grade': product.nutrition_grade.upper(),
+    #                     'stores': ', '.join(
+    #                         [s.name for s in product.stores]
+    #                     ),
+    #                     'url': product.url,
+    #                     'substitutes': '\n'.join(
+    #                         ['- ' + p.name + ' (NUTRISCORE: '
+    #                             + p.nutrition_grade.upper() + ')'
+    #                             for p in product.substitutes]
+    #                     ),
+    #                 }
+    #         # Displays refreshed "page" with optional data
+    #         self.ui.display(data)
+
+    def get_categories(self) -> Generator[DBCategory, None, None]:
         '''Get all categories'''
-        return self.db.get_categories()
+        for category in self.db.get_categories():
+            yield category
 
-    def _get_products(self, category_id: int) -> List[DBProduct]:
+    def get_products(self, category_id: int) \
+            -> Generator[DBProduct, None, None]:
         '''Get all products by category (id)'''
-        return sorted(
+        products: List[DBProduct] = sorted(
             self.db.get_products_by_category(category_id),
             key=lambda p: (p.nutrition_grade, p.name), reverse=True
         )
+        for product in products:
+            yield product
 
-    def _get_product_details(self, product_id: int) -> DBProduct:
+    def get_product_details(self, product_id: int) -> DBProduct:
         '''Get a product details (by id)'''
         return self.db.get_product_by_id(product_id)
 
-    def _get_substitutes_for(self, product_id: int) -> List[DBProduct]:
+    def get_substitutes_for(self, product_id: int) \
+            -> Generator[DBProduct, None, None]:
         '''Get substitues for a product (by id)'''
-        return self.db.get_substitutes_for(product_id)
+        for product in self.db.get_substitutes_for(product_id):
+            yield product
 
     def _add_favorite(self, ids: List[int]) -> List[DBProduct]:
         '''Add a new favorite substitution (with id of the substitute

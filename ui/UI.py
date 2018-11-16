@@ -22,14 +22,14 @@ class UI(ABC):
     S_SAVED_FAVORITE: int = 9
     QUIT: int = -1
 
-    @abstractmethod
-    def interact(self) -> Any:
-        '''Abstract method forcing every child to implement
-        an interaction between the App and the user'''
-        pass
-
-    @abstractmethod
-    def display(self, data: Optional[Any] = None) -> Any:
-        '''Abstract method forcing every child to implement
-        a display method for screen output'''
-        pass
+    # @abstractmethod
+    # def interact(self) -> Any:
+    #     '''Abstract method forcing every child to implement
+    #     an interaction between the App and the user'''
+    #     pass
+    #
+    # @abstractmethod
+    # def display(self, data: Optional[Any] = None) -> Any:
+    #     '''Abstract method forcing every child to implement
+    #     a display method for screen output'''
+    #     pass
