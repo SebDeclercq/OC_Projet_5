@@ -152,7 +152,8 @@ class DB:
         product: DBProduct = self.get_product_by_id(product_id)
         query: Query = self.session.query(self.Product).\
             filter(self.Product.nutrition_grade < product.nutrition_grade).\
-            filter(self.Product.categories.any(id=product.categories[0].id))
+            filter(self.Product.categories.any(id=product.categories[0].id)).\
+            order_by(self.Product.nutrition_grade, self.Product.name)
         return query.all()
 
     def add_favorite(self, ids: List[int]) -> List[DBProduct]:

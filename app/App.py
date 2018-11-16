@@ -201,7 +201,10 @@ class App:
 
     def _get_products(self, category_id: int) -> List[DBProduct]:
         '''Get all products by category (id)'''
-        return self.db.get_products_by_category(category_id)
+        return sorted(
+            self.db.get_products_by_category(category_id),
+            key=lambda p: (p.nutrition_grade, p.name), reverse=True
+        )
 
     def _get_product_details(self, product_id: int) -> DBProduct:
         '''Get a product details (by id)'''
