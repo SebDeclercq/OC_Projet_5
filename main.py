@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+'''Main script starting up this OC P5 program.
+This script is parametrized with CLI options, which are described
+with a usage() function available with pipenv run python main.py --help.
+Please refer to this help guide for further information.'''
 from typing import NoReturn, List, Dict, Optional, Any, Generator
 import getopt
 import sys
@@ -7,6 +11,7 @@ import os
 
 
 def usage() -> None:
+    '''function acting as "Help guide"'''
     print('\n'.join((
         '\nDESCRIPTION: ',
         'This main script is intended to pilot all processing actions for ',
@@ -38,6 +43,8 @@ def usage() -> None:
 
 
 def parse_options() -> Params:
+    '''Function parsing CLI commands with getopt.
+    It creates a Params object and returns it.'''
     params: Dict[str, Any] = {}
     try:
         options, args = getopt.getopt(
@@ -83,6 +90,7 @@ def parse_options() -> Params:
 
 
 def main() -> None:
+    '''Main function'''
     params: Params = parse_options()
     app: App = App(params)
     try:

@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
+'''Class representing a minimal Product from OpenFoodFacts API'''
 from dataclasses import dataclass
 from typing import List
 
 
 @dataclass
 class Product:
+    '''Class representing a minimal Product from OpenFoodFacts API'''
     id: int
     name: str
     brands: str

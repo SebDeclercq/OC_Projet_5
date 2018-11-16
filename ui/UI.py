@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
+'''Abstract class which will be the parent class of all the UIs.
+Forces all children to have an interact() method and a display() method
+and shares class variables too.'''
 from abc import ABC, abstractmethod
 from typing import Optional, Any
 
 
 class UI(ABC):
+    '''Abstract class which will be the parent class of all the UIs.
+    Forces all children to have an interact() method and a display() method
+    and shares class variables too.'''
     WELCOME: int = 1
     TOP_MENU: int = 2
     GO_BACK_TO_TOP_MENU: int = 0
@@ -18,8 +24,12 @@ class UI(ABC):
 
     @abstractmethod
     def interact(self) -> Any:
+        '''Abstract method forcing every child to implement
+        an interaction between the App and the user'''
         pass
 
     @abstractmethod
     def display(self, data: Optional[Any] = None) -> Any:
+        '''Abstract method forcing every child to implement
+        a display method for screen output'''
         pass
