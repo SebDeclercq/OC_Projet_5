@@ -45,7 +45,7 @@ class App:
         database interaction like. Two options are available:
         1. Creating a new database (setup_db mode)
         2. Updating the database (update_db mode)'''
-        self.api = API(verbose=self.params.verbose)
+        self.api = API()
         categories = self._categories
         if self.params.setup_db:
             print('Cette opération va supprimer toutes les données '

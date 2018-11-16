@@ -9,7 +9,6 @@ class Product:
     '''Class representing a minimal Product from OpenFoodFacts API'''
     id: int
     name: str
-    brands: str
     nutrition_grades: str
     url: str
     stores: List[str]

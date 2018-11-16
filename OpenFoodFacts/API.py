@@ -28,10 +28,6 @@ class API:
         field.name for field in dataclasses.fields(Product)
     }
 
-    def __init__(self, verbose: bool = False) -> None:
-        '''Constructor'''
-        self.verbose = verbose
-
     def _get_products(self,
                       params: Dict[str, Union[int, str]]
                       ) -> Generator[Product, None, None]:
@@ -41,8 +37,6 @@ class API:
         r_params: Dict[str, Union[int, str]] = self.BASE_PARAMS.copy()
         r_params.update(params)
         r_result: requests.Response = requests.get(self.BASE_URL, r_params)
-        if self.verbose:
-            print(r_result.url)
         if r_result.status_code != requests.codes.ok:
             r_result.raise_for_status()
         products: List[Dict[str, Any]] = r_result.json()['products']
@@ -63,11 +57,6 @@ class API:
         API contains every required elements (returns True/False)'''
         for field in self.USEFUL_FIELDS:
             if field not in result or not result[field]:
-                if self.verbose:
-                    print(
-                        'Missing field "%s" for product %s'
-                        % (field, result['code'])
-                    )
                 return False
         return True
 

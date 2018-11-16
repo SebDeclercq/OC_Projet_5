@@ -71,7 +71,6 @@ class DB:
         p: DBProduct = self.Product(
             id=product.id,
             name=product.name,
-            # brands=product.brands,
             nutrition_grade=product.nutrition_grades,
             url=product.url,
             stores=stores,
@@ -125,7 +124,6 @@ class DB:
         Returns the said DBProduct.'''
         existing_product.id = product.id
         existing_product.name = product.name
-        # existing_product.brands = product.brands
         existing_product.nutrition_grade = product.nutrition_grades
         existing_product.url = product.url
         existing_product.stores = stores

@@ -15,7 +15,6 @@ class Params:
     search: Optional[str] = None
     category: Optional[str] = None
     tag: Optional[str] = None
-    verbose: bool = False
     categories_file: str = 'categories.yml'
     interactive: bool = False
     ui: str = 'console'
