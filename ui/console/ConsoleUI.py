@@ -6,6 +6,7 @@ import os
 import platform
 from ..UI import UI
 from ..UIReturn import UIReturn
+from db import DBProduct, DBCategory
 
 
 class ConsoleUI(UI):
@@ -66,8 +67,16 @@ class ConsoleUI(UI):
                 actions: Dict[int, int] = {}
                 for idx, element in enumerate(data):
                     no_el: int = idx + 1
-                    print('%s - %s' % (str(no_el), element[0]))
-                    actions[no_el] = element[1]
+                    if self.current_level == self.S_LIST_CATEGO:
+                        print('%-3s - %s' % (str(no_el),
+                                             element.name.capitalize()))
+                    else:
+                        print('%-3s - (NUTRISCORE: %s) %s' % (
+                            str(no_el),
+                            element.nutrition_grade.upper(),
+                            element.name.capitalize()
+                        ))
+                    actions[no_el] = element.id
                 self.history.append(actions)
             elif self.current_level in self.product_pages:
                 # If we're on a product details page, shows text
@@ -82,8 +91,8 @@ class ConsoleUI(UI):
                 print('\nAucun résultat trouvé\n')
         if self.current_level != self.TOP_MENU:
             # For every page except top, add a 0 option to go back to the top
-            print("0 - Retour à l'accueil")
-        print("q - Quitter")  # Add a q "quit" option to every page
+            print("0   - Retour à l'accueil")
+        print("q   - Quitter")  # Add a q "quit" option to every page
 
     def interact(self) -> UIReturn:
         '''Method interacting with the user in the console.

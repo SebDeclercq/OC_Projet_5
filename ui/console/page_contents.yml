@@ -7,8 +7,8 @@ WELCOME: |
 
 TOP_MENU: |
 
-    1 - Quel aliment souhaitez-vous remplacer ?
-    2 - Retrouver mes aliments substitués.
+    1   - Quel aliment souhaitez-vous remplacer ?
+    2   - Retrouver mes aliments substitués.
 
 S_LIST_CATEGO: |
 
@@ -29,8 +29,8 @@ S_PRODUCT_PAGE: |
     - magasin(s) : %(stores)s
     - URL: %(url)s
 
-    1 - Trouver des substituts plus sains
-    2 - Sauvegarder dans les favoris
+    1   - Trouver des substituts plus sains
+    2   - Sauvegarder dans les favoris
 
 S_LIST_SUBSTITUTES: |
 
@@ -58,5 +58,5 @@ F_PRODUCT_PAGE: |
 S_SAVED_FAVORITE: |
 
     Substitut sauvegardé !
-    
+
     "%(substituter)s" est préféré à "%(substituted)s" et sauvegardé en base.

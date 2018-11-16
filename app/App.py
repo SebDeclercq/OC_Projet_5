@@ -115,15 +115,13 @@ class App:
                 # If the list of categories is needed,
                 # returns their names (for display) and ids
                 # (for further interaction)
-                data = [(c.name.capitalize(), c.id)
-                        for c in self._get_categories()]
+                data = self._get_categories()
             elif uir.action == UI.S_LIST_PRODUCTS:
                 # If the list of products is needed,
                 # returns their names (for display) and ids
                 # (for further interaction)
                 if uir.id_query:
-                    data = [(p.name.capitalize(), p.id)
-                            for p in self._get_products(uir.id_query)]
+                    data = self._get_products(uir.id_query)
             elif uir.action == UI.S_PRODUCT_PAGE:
                 # If the details of a product is needed,
                 # collects them with its id, converts the data
@@ -147,10 +145,7 @@ class App:
                 # and returns their names (for display) and ids
                 # (for further interaction)
                 if uir.id_query:
-                    substitutes: List[DBProduct] = self._get_substitutes_for(
-                        uir.id_query
-                    )
-                    data = [(p.name.capitalize(), p.id) for p in substitutes]
+                    data = self._get_substitutes_for(uir.id_query)
             elif uir.action == UI.S_SAVED_FAVORITE:
                 # For saving a new favorite substitution,
                 # the ids of the substituted product and its
@@ -168,8 +163,7 @@ class App:
                 # collects them with the id of the product to substitute
                 # and returns their names (for display) and ids
                 # (for further interaction)
-                data = [(fav.name.capitalize(), fav.id)
-                        for fav in self._get_favorite_products()]
+                data = self._get_favorite_products()
             elif uir.action == UI.F_PRODUCT_PAGE:
                 # If the details of a product is needed,
                 # collects them with its id, converts the data
