@@ -3,7 +3,7 @@
 Forces all children to have an interact() method and a display() method
 and shares class variables too.'''
 from abc import ABC, abstractmethod
-from typing import Optional, Any
+from app import App
 
 
 class UI(ABC):
@@ -22,14 +22,8 @@ class UI(ABC):
     S_SAVED_FAVORITE: int = 9
     QUIT: int = -1
 
-    # @abstractmethod
-    # def interact(self) -> Any:
-    #     '''Abstract method forcing every child to implement
-    #     an interaction between the App and the user'''
-    #     pass
-    #
-    # @abstractmethod
-    # def display(self, data: Optional[Any] = None) -> Any:
-    #     '''Abstract method forcing every child to implement
-    #     a display method for screen output'''
-    #     pass
+    @abstractmethod
+    def start(self, app: App) -> None:
+        '''Abstract method forcing every child to implement
+        an interaction between the App and the user'''
+        pass

@@ -14,24 +14,33 @@ from db import DBCategory, DBProduct
 class ConsoleUI(UI):
     '''Class describing the UI in console.
     Inherits from the UI abstract class
+
+    Attributes:
+        app: The Running App
+        contents: Holds the text to display page by page
+        history: Contains the previous products in the current sequence
     '''
 
     def __init__(self) -> None:
+        '''Constructor getting page contents automatically'''
         text_file: str = os.path.join('ui', 'console', 'page_contents.yml')
         with open(text_file, encoding='utf-8') as f:  # Get page contents
             self.contents: Dict[str, Any] = yaml.load(f)
 
     def start(self, app: App) -> None:
+        '''Main access method, launch the App UI'''
         self.app: App = app
         self.history: List[DBProduct] = []
         print(self.contents['WELCOME'])
         self.top_menu()
 
     def quit(self) -> None:
+        '''Quits'''
         print('Au revoir !')
         exit()
 
     def top_menu(self) -> None:
+        '''Actions and display for the top menu'''
         self.history.clear()  # Clears history every time we meet the top
         menu: Menu = Menu()
         menu.add(
@@ -45,6 +54,7 @@ class ConsoleUI(UI):
         self.interact(menu)
 
     def category_list_menu(self) -> None:
+        '''Actions and display for the categories list menu'''
         print(self.contents['S_LIST_CATEGO'])
         menu: Menu = Menu()
         for category in self.app.get_categories():
@@ -56,6 +66,7 @@ class ConsoleUI(UI):
         self.interact(menu)
 
     def favorite_list_menu(self) -> None:
+        '''Actions and display for the favorites list menu'''
         print(self.contents['F_LIST_FAVORITES'])
         menu: Menu = Menu()
         for favorite in self.app.get_favorite_products():
@@ -67,6 +78,7 @@ class ConsoleUI(UI):
         self.interact(menu)
 
     def product_list_menu(self, category_id: int) -> None:
+        '''Actions and display for the products list menu'''
         print(self.contents['S_LIST_PRODUCTS'])
         menu: Menu = Menu()
         for product in self.app.get_products(category_id):
@@ -78,6 +90,7 @@ class ConsoleUI(UI):
         self.interact(menu)
 
     def product_page(self, product_id: int) -> None:
+        '''Actions and display for the product details page'''
         product: DBProduct = self.app.get_product_details(product_id)
         self.history.append(product)  # Adds seen product to history
         print(
@@ -105,6 +118,7 @@ class ConsoleUI(UI):
         self.interact(menu)
 
     def favorite_page(self, product_id: int) -> None:
+        '''Actions and display for the favorite product details page'''
         product: DBProduct = self.app.get_product_details(product_id)
         print(
             self.contents['F_PRODUCT_PAGE'] %
@@ -140,6 +154,7 @@ class ConsoleUI(UI):
         self.interact(menu)
 
     def save_to_favorite(self) -> None:
+        '''Actions and display for the saving module'''
         if not len(self.history) >= 2:
             print('Ce produit est le premier visionné, '
                   'vous ne pouvez pas sauvegarder de substitut.')
@@ -159,6 +174,7 @@ class ConsoleUI(UI):
         self.interact(menu)
 
     def interact(self, menu: Menu) -> Any:
+        '''Main interaction method, piloting the actions for every menus'''
         action: MenuEntry = self._get_next_action(menu)
         if action.args:
             action.handler(action.args)
@@ -166,6 +182,7 @@ class ConsoleUI(UI):
             action.handler()
 
     def _get_next_action(self, menu: Menu) -> MenuEntry:
+        '''Method waiting for user input, returning next chosen action'''
         menu.add("Retour à l'accueil", self.top_menu, 0)
         menu.add('Quitter', self.quit, 'q')
         while True:
