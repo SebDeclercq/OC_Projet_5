@@ -23,7 +23,7 @@ class ConsoleUI(UI):
 
     def start(self, app: App) -> None:
         self.app: App = app
-        self.history: List[Any] = []
+        self.history: List[DBProduct] = []
         print(self.contents['WELCOME'])
         self.top_menu()
 
@@ -32,6 +32,7 @@ class ConsoleUI(UI):
         exit()
 
     def top_menu(self) -> None:
+        self.history.clear()  # Clears history every time we meet the top
         menu: Menu = Menu()
         menu.add(
             'Quel aliment souhaitez-vous remplacer ?',
@@ -78,6 +79,7 @@ class ConsoleUI(UI):
 
     def product_page(self, product_id: int) -> None:
         product: DBProduct = self.app.get_product_details(product_id)
+        self.history.append(product)  # Adds seen product to history
         print(
             self.contents['S_PRODUCT_PAGE'] %
             {
@@ -138,7 +140,23 @@ class ConsoleUI(UI):
         self.interact(menu)
 
     def save_to_favorite(self) -> None:
-        ...
+        if not len(self.history) >= 2:
+            print('Ce produit est le premier visionné, '
+                  'vous ne pouvez pas sauvegarder de substitut.')
+            previous_product_id: int = self.history.pop().id
+            self.product_page(previous_product_id)
+        favorites: List[DBProduct] = self.app.add_favorite(
+            *self.history[-2:]
+        )
+        print(
+            self.contents['S_SAVED_FAVORITE'] %
+            {
+                'substituted': favorites[0].name.capitalize(),
+                'substituter': favorites[1].name.capitalize(),
+            }
+        )
+        menu: Menu = Menu()
+        self.interact(menu)
 
     def interact(self, menu: Menu) -> Any:
         action: MenuEntry = self._get_next_action(menu)

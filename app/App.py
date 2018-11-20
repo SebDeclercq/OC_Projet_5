@@ -218,10 +218,11 @@ class App:
         for product in self.db.get_substitutes_for(product_id):
             yield product
 
-    def _add_favorite(self, ids: List[int]) -> List[DBProduct]:
+    def add_favorite(self, substituted: DBProduct,
+                     substituter: DBProduct) -> List[DBProduct]:
         '''Add a new favorite substitution (with id of the substitute
         and the substituted product) and returns both DBProducts'''
-        return self.db.add_favorite(ids)
+        return self.db.add_favorite(substituted, substituter)
 
     def get_favorite_products(self) -> Generator[DBProduct, None, None]:
         '''Get all saved products'''

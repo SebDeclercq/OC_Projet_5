@@ -148,7 +148,7 @@ class DB:
 
     def get_substitutes_for(self, product_id: int) \
             -> List[DBProduct]:
-        '''Get substitues for a product (by id)'''
+        '''Get substitutes for a product (by id)'''
         product: DBProduct = self.get_product_by_id(product_id)
         query: Query = self.session.query(self.Product).\
             filter(self.Product.nutrition_grade < product.nutrition_grade).\
@@ -156,11 +156,10 @@ class DB:
             order_by(self.Product.nutrition_grade, self.Product.name)
         return query.all()
 
-    def add_favorite(self, ids: List[int]) -> List[DBProduct]:
-        '''Add a new favorite substitution (with id of the substitute
-        and the substituted product) and returns both DBProducts'''
-        substituted = self.get_product_by_id(ids[0])
-        substituter = self.get_product_by_id(ids[1])
+    def add_favorite(self, substituted: DBProduct,
+                     substituter: DBProduct) -> List[DBProduct]:
+        '''Add a new reciprocal favorite substitution relation and
+        returns both DBProducts'''
         substituted.substituted_by.append(substituter)
         substituter.substitutes.append(substituted)
         self.session.commit()
