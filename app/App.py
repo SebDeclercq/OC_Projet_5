@@ -10,7 +10,7 @@ import db.setup
 from db import DB, DBCategory, DBProduct
 from app import Params
 from OpenFoodFacts import API, Product
-from ui import UI, UIFactory, UIReturn
+from ui import UI, UIFactory
 import yaml
 import os
 

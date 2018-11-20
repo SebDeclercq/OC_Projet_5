@@ -5,7 +5,6 @@ import yaml
 import os
 import platform
 from ..UI import UI
-from ..UIReturn import UIReturn
 from .Menu import Menu, MenuEntry
 from app import App
 from db import DBCategory, DBProduct
