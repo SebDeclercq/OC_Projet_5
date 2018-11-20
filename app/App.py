@@ -223,6 +223,7 @@ class App:
         and the substituted product) and returns both DBProducts'''
         return self.db.add_favorite(ids)
 
-    def _get_favorite_products(self) -> List[DBProduct]:
+    def get_favorite_products(self) -> Generator[DBProduct, None, None]:
         '''Get all saved products'''
-        return self.db.get_favorite_products()
+        for favorite in self.db.get_favorite_products():
+            yield favorite

@@ -54,8 +54,16 @@ class ConsoleUI(UI):
             )
         self.interact(menu)
 
-    def favorite_list_menu(self, args: str) -> None:
-        ...
+    def favorite_list_menu(self) -> None:
+        print(self.contents['F_LIST_FAVORITES'])
+        menu: Menu = Menu()
+        for favorite in self.app.get_favorite_products():
+            menu.add(
+                favorite.name.capitalize(),
+                self.favorite_page,
+                args=favorite.id
+            )
+        self.interact(menu)
 
     def product_list_menu(self, category_id: int) -> None:
         print(self.contents['S_LIST_PRODUCTS'])
@@ -92,6 +100,28 @@ class ConsoleUI(UI):
             'Sauvegarder dans les favoris',
             self.save_to_favorite
         )
+        self.interact(menu)
+
+    def favorite_page(self, product_id: int) -> None:
+        product: DBProduct = self.app.get_product_details(product_id)
+        print(
+            self.contents['F_PRODUCT_PAGE'] %
+            {
+                'id': product.id,
+                'name': product.name.capitalize(),
+                'nutrition_grade': product.nutrition_grade.upper(),
+                'stores': ', '.join(
+                    [s.name for s in product.stores]
+                ),
+                'url': product.url,
+                'substitutes': '\n'.join(
+                    ['- ' + p.name + ' (NUTRISCORE: '
+                        + p.nutrition_grade.upper() + ')'
+                        for p in product.substitutes]
+                ),
+            }
+        )
+        menu: Menu = Menu()
         self.interact(menu)
 
     def substitute_list_menu(self, product_id: int) -> None:
