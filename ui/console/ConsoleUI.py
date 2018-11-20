@@ -82,8 +82,12 @@ class ConsoleUI(UI):
         print(self.contents['S_LIST_PRODUCTS'])
         menu: Menu = Menu()
         for product in self.app.get_products(category_id):
+            text_option: str = (
+                '(NUTRISCORE: %s) %-50s'
+                % (product.nutrition_grade.upper(), product.name.capitalize())
+            )
             menu.add(
-                product.name.capitalize(),
+                text_option,
                 self.product_page,
                 args=product.id
             )
@@ -144,8 +148,12 @@ class ConsoleUI(UI):
         print(self.contents['S_LIST_SUBSTITUTES'])
         menu: Menu = Menu()
         for product in self.app.get_substitutes_for(product_id):
+            text_option: str = (
+                '(NUTRISCORE: %s) %-50s'
+                % (product.nutrition_grade.upper(), product.name.capitalize())
+            )
             menu.add(
-                product.name.capitalize(),
+                text_option,
                 self.product_page,
                 args=product.id
             )

@@ -13,7 +13,7 @@ class MenuEntry:
     menu: Menu
 
     def __repr__(self) -> str:
-        return f'{self.id:3} - {self.label.capitalize()}'
+        return f'{self.id:3} - {self.label}'
 
 
 @dataclass
