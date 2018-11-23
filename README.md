@@ -8,7 +8,11 @@ It will be based upon a pipenv environment which means that to build a new insta
 
 To deploy the required environment, use `pipenv install`. This will setup your directory with the components used in the piece of software (by reading configuration files such as the Pipfile you may see in this repo).
 
-To launch the python script, use `pipenv run python main.py`. Lots of options are available.
+For the first run, set up the MySQL database (see [Database Configuration](#database-configuration)) and use `pipenv run python main.py --setup_db`. If your configuration is different from default, please refer to the [Usage](#usage) section.
+
+To use the python script with default configuration, run `pipenv run python main.py`.
+
+Lots of options are available.
 
 ## Usage
 
