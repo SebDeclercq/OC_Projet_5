@@ -60,7 +60,7 @@ class DB:
             return new_product
         except Exception as err:
             self.session.rollback()
-            raise err
+            pass
 
     def _add_product(self, product: Product,
                      stores: List[DBStore],
