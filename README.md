@@ -14,6 +14,8 @@ To use the python script with default configuration, run `pipenv run python main
 
 Lots of options are available.
 
+The `categories.yml` holds the list of the categories you wish to manage in your database. The program is configured to allow 5 categories max and 100 products max by category.
+
 ## Usage
 
 Please find the help page hereafter, which is also available with the `-h --help` option for `main.py`.
