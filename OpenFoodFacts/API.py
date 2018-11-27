@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 '''Class interfacing the App and the OpenFoodFacts's API'''
-from OpenFoodFacts.Product import Product
+
 from typing import Dict, Set, Union, Generator, Any, List, NoReturn
 import dataclasses
-import requests
 import re
+import requests
+from OpenFoodFacts.Product import Product
 
 
 class API:

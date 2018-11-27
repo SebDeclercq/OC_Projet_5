@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 '''"Container"-like class meant to hold all parameters for the App'''
+
 from dataclasses import dataclass
 from typing import Optional
 

@@ -3,9 +3,10 @@
 
 Has for purpose to handle all actions on the database (DDL, DML).
 Built upon SQLAlchemy ORM."""
+
+from typing import NoReturn, List, Dict, Optional, Any, Generator, Union
 from sqlalchemy.orm import Session, Query
 from sqlalchemy.ext.declarative.api import DeclarativeMeta
-from typing import NoReturn, List, Dict, Optional, Any, Generator, Union
 from OpenFoodFacts import Product
 from db.setup import (Product as DBProduct, Store as DBStore,
                       Category as DBCategory)

@@ -3,11 +3,12 @@
 This script is parametrized with CLI options, which are described
 with a usage() function available with pipenv run python main.py --help.
 Please refer to this help guide for further information.'''
+
 from typing import NoReturn, List, Dict, Optional, Any, Generator
 import getopt
 import sys
-from app import App, Params
 import os
+from app import App, Params
 
 
 def usage() -> None:
